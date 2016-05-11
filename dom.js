@@ -32,124 +32,126 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['score.init'], function(score) {
-            score.extend('dom', [], factory);
-        });
+        define(['score.init'], factory);
     } else if (typeof module === 'object' && module.exports) {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like environments that support module.exports,
         // like Node.
-        require('score.init').extend('dom', [], factory);
+        factory(require('score.init'));
     } else {
         // Browser globals (root is window)
-        root.score.extend('dom', [], factory);
+        factory(root.score);
     }
-})(this, function() {
+})(this, function(score) {
 
-    var i, j, result, tmp,
+    score.extend('dom', [], function() {
 
-        matches = ['matches', 'webkitMatchesSelector', 'msMatchesSelector'].filter(function(func) {
-            return func in document.documentElement;
-        })[0],
+        var i, j, result, tmp,
 
-        dom = function(arg) {
-            result = Object.create(dom.proto);
-            if (arg) {
-                if (Array.isArray(arg)) {
-                    result.concat(arg);
-                } else if (typeof arg == 'object') {
-                    result.push(arg);
-                } else {
-                    tmp = dom.queryGlobal(arg);
-                    for (i = tmp.length - 1; i >= 0; i--) {
-                        result.push(tmp[i]);
+            matches = ['matches', 'webkitMatchesSelector', 'msMatchesSelector'].filter(function(func) {
+                return func in document.documentElement;
+            })[0],
+
+            dom = function(arg) {
+                result = Object.create(dom.proto);
+                if (arg) {
+                    if (Array.isArray(arg)) {
+                        result.concat(arg);
+                    } else if (typeof arg == 'object') {
+                        result.push(arg);
+                    } else {
+                        tmp = dom.queryGlobal(arg);
+                        for (i = tmp.length - 1; i >= 0; i--) {
+                            result.push(tmp[i]);
+                        }
                     }
                 }
-            }
-            return result;
-        };
+                return result;
+            };
 
-    dom.proto = Object.create(Array.prototype, {
+        dom.proto = Object.create(Array.prototype, {
 
-        matches: {value: function(selector) {
-            for (i = 0; i < this.length; i++) {
-                if (!dom.testMatch(this[i], selector)) {
-                    return false;
+            matches: {value: function(selector) {
+                for (i = 0; i < this.length; i++) {
+                    if (!dom.testMatch(this[i], selector)) {
+                        return false;
+                    }
                 }
-            }
-            return true;
-        }},
+                return true;
+            }},
 
-        empty: {value: function() {
-            return !this.length;
-        }},
+            empty: {value: function() {
+                return !this.length;
+            }},
 
-        clone: {value: function() {
-            result = Object.create(dom.proto);
-            for (i = 0; i < this.length; i++) {
-                result.push(this[i].cloneNode(true));
-            }
-            return result;
-        }},
+            clone: {value: function() {
+                result = Object.create(dom.proto);
+                for (i = 0; i < this.length; i++) {
+                    result.push(this[i].cloneNode(true));
+                }
+                return result;
+            }},
 
-        children: {value: function(selector) {
-            result = Object.create(dom.proto);
-            for (i = 0; i < this.length; i++) {
-                tmp = this[i].children;
-                for (j = 0; j < tmp.length; j++) {
-                    if (!selector || dom.testMatch(tmp[j], selector)) {
+            children: {value: function(selector) {
+                result = Object.create(dom.proto);
+                for (i = 0; i < this.length; i++) {
+                    tmp = this[i].children;
+                    for (j = 0; j < tmp.length; j++) {
+                        if (!selector || dom.testMatch(tmp[j], selector)) {
+                            result.push(tmp[j]);
+                        }
+                    }
+                }
+                return result;
+            }},
+
+            down: {value: function(selector) {
+                result = Object.create(dom.proto);
+                for (i = 0; i < this.length; i++) {
+                    tmp = dom.queryLocal(this[i], selector);
+                    for (j = 0; j < tmp.length; j++) {
                         result.push(tmp[j]);
                     }
                 }
-            }
-            return result;
-        }},
+                return result;
+            }},
 
-        down: {value: function(selector) {
-            result = Object.create(dom.proto);
-            for (i = 0; i < this.length; i++) {
-                tmp = dom.queryLocal(this[i], selector);
-                for (j = 0; j < tmp.length; j++) {
-                    result.push(tmp[j]);
+            parent: {value: function(selector) {
+                result = Object.create(dom.proto);
+                for (i = 0; i < this.length; i++) {
+                    tmp = this[i].parentNode;
+                    if (!selector || dom.testMatch(tmp, selector)) {
+                        result.push(tmp);
+                    }
                 }
-            }
-            return result;
-        }},
+                return result;
+            }},
 
-        parent: {value: function(selector) {
-            result = Object.create(dom.proto);
-            for (i = 0; i < this.length; i++) {
-                tmp = this[i].parentNode;
-                if (!selector || dom.testMatch(tmp, selector)) {
-                    result.push(tmp);
+            up: {value: function(selector) {
+                result = Object.create(dom.proto);
+                for (i = 0; i < this.length; i++) {
+                    tmp = this[i].parentNode;
+                    if (!selector || dom.testMatch(tmp, selector)) {
+                        result.push(tmp);
+                    }
                 }
-            }
-            return result;
-        }},
+                return result;
+            }}
 
-        up: {value: function(selector) {
-            result = Object.create(dom.proto);
-            for (i = 0; i < this.length; i++) {
-                tmp = this[i].parentNode;
-                if (!selector || dom.testMatch(tmp, selector)) {
-                    result.push(tmp);
-                }
-            }
-            return result;
-        }}
+        });
+
+        dom.queryGlobal = document.querySelectorAll.bind(document);
+
+        dom.queryLocal = function(root, selector) {
+            return root.querySelectorAll(selector);
+        };
+
+        dom.testMatch = function(node, selector) {
+            return node[matches](selector);
+        };
+
+        return dom;
 
     });
-
-    dom.queryGlobal = document.querySelectorAll.bind(document);
-
-    dom.queryLocal = function(root, selector) {
-        return root.querySelectorAll(selector);
-    };
-
-    dom.testMatch = function(node, selector) {
-        return node[matches](selector);
-    };
-
-    return dom;
 
 });
