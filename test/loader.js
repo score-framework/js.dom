@@ -19,7 +19,7 @@ function loadScript(url, callback) {
 function loadScoreModule(module, callback) {
     var url;
     if (testConf[module] === 'local') {
-        url = '../' + module.replace('.', '/') + '.js';
+        url = '../' + module + '.js';
     } else if (testConf[module]) {
         url = 'https://raw.githubusercontent.com/score-framework/js.' + module + '/' + testConf[module] + '/' + module + '.js';
     } else {
@@ -66,9 +66,6 @@ function loadScoreWithRequireJs(modules, callback) {
         modules = [];
     }
     loadScript('https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.js', function() {
-        for (var i = 0; i < modules.length; i++) {
-            modules[i] = modules[i].replace('.', '/');
-        }
         modules.splice(0, 0, 'init');
         require.config({baseUrl: "../"});
         require(modules, function(score) {
