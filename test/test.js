@@ -50,27 +50,205 @@ var testConf = {
     'dom': 'local'
 };
 
-describe('loadScore', function() {
-    it('should load empty score base', function(done) {
-        loadScore(function(score) {
-            expect(score).to.be.an('object');
-            done();
+describe('score.dom', function() {
+
+    describe('module', function() {
+
+        it('should add the score.dom function', function(done) {
+            loadScore(function(score) {
+                expect(score).to.be.an('object');
+                expect(score.dom).to.be(undefined);
+                loadScore(['dom'], function(score) {
+                    expect(score).to.be.an('object');
+                    expect(score.dom).to.be.a('function');
+                    done();
+                });
+            });
         });
+
     });
-    it('should load a new score on each call', function(done) {
-        loadScore(function(score1) {
-            loadScore(function(score2) {
-                expect(score1).to.not.equal(score2);
+
+    describe('#empty', function() {
+
+        it('should return true for an empty object', function(done) {
+            loadScore(['dom'], function(score) {
+                expect(score.dom().empty()).to.be(true);
                 done();
             });
         });
-    });
-    it('should load local dom module', function(done) {
-        loadScore(['dom'], function(score) {
-            expect(score).to.be.an('object');
-            expect(score.dom).to.be.a('function');
-            done();
+
+        it("should return false when selecting '#fixture'", function(done) {
+            loadScore(['dom'], function(score) {
+                expect(score.dom('#fixture').empty()).to.be(false);
+                done();
+            });
         });
+
     });
+
+    describe('#fromString', function() {
+
+        it("should create a an empty score.dom object from empty string", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString();
+                expect(div.length).to.be(0);
+                done();
+            });
+        });
+
+        it("should create a new score.dom object from string", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<div class="foo"></div>');
+                expect(div.length).to.be(1);
+                expect(div[0].nodeName).to.be('DIV');
+                expect(div[0].className).to.be('foo');
+                expect(div[0].children.length).to.be(0);
+                expect(div.children().empty()).to.be(true);
+                done();
+            });
+        });
+
+        it("should be able to create multiple nodes", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<div class="foo"></div><div class="bar"></div>');
+                expect(div.length).to.be(2);
+                expect(div[0].nodeName).to.be('DIV');
+                expect(div[0].className).to.be('foo');
+                expect(div[0].children.length).to.be(0);
+                expect(div.children().empty()).to.be(true);
+                expect(div[1].nodeName).to.be('DIV');
+                expect(div[1].className).to.be('bar');
+                expect(div[1].children.length).to.be(0);
+                done();
+            });
+        });
+
+        it("should create detached nodes", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<div class="foo"></div>');
+                expect(div[0].parentNode).to.be(null);
+                done();
+            });
+        });
+
+        it("should not attach the newly created nodes into the DOM at any time", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<script>alert("Test failed!");</script>');
+                done();
+            });
+        });
+
+    });
+
+    describe('#append', function() {
+
+        it("should append given node to *first* node", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<div class="foo"></div><div class="bar"></div>');
+                expect(div.length).to.be(2);
+                expect(div.children().length).to.be(0);
+                var span = score.dom.fromString('<span class="bar"></div>');
+                expect(span.length).to.be(1);
+                expect(span.children().length).to.be(0);
+                div.append(span);
+                expect(div.children().length).to.be(1);
+                expect(div.get(0).length).to.be(1);
+                expect(div.get(0).children().length).to.be(1);
+                expect(div.get(1).children().length).to.be(0);
+                done();
+            });
+        });
+
+        it("should add *all* given nodes to the first node", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<div class="foo"></div>');
+                expect(div.length).to.be(1);
+                expect(div.children().length).to.be(0);
+                for (var i = 0; i < 10; i++) {
+                    var span = score.dom.fromString('<span class="bar_' + i + '"></div>');
+                    expect(span.length).to.be(1);
+                    expect(span.children().length).to.be(0);
+                    div.append(span);
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(i + 1);
+                    expect(div.children()[0].className).to.be('bar_0');
+                    expect(div.children()[i].className).to.be('bar_' + i);
+                }
+                done();
+            });
+        });
+
+        it("should add *after* existing nodes", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<div class="foo"><span class="bar_0"></span></div>');
+                expect(div.length).to.be(1);
+                expect(div.children().length).to.be(1);
+                var span = score.dom.fromString('<span class="bar_1"></div>');
+                div.append(span);
+                expect(div.length).to.be(1);
+                expect(div.children().length).to.be(2);
+                expect(div.children()[0].className).to.be('bar_0');
+                expect(div.children()[1].className).to.be('bar_1');
+                done();
+            });
+        });
+
+    });
+
+    describe('#prepend', function() {
+
+        it("should prepend given node to *first* node", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<div class="foo"></div><div class="bar"></div>');
+                expect(div.length).to.be(2);
+                expect(div.children().length).to.be(0);
+                var span = score.dom.fromString('<span class="bar"></div>');
+                expect(span.length).to.be(1);
+                expect(span.children().length).to.be(0);
+                div.prepend(span);
+                expect(div.children().length).to.be(1);
+                expect(div.get(0).length).to.be(1);
+                expect(div.get(0).children().length).to.be(1);
+                expect(div.get(1).children().length).to.be(0);
+                done();
+            });
+        });
+
+        it("should add *all* given nodes to the first node", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<div class="foo"></div>');
+                expect(div.length).to.be(1);
+                expect(div.children().length).to.be(0);
+                for (var i = 0; i < 10; i++) {
+                    var span = score.dom.fromString('<span class="bar_' + i + '"></div>');
+                    expect(span.length).to.be(1);
+                    expect(span.children().length).to.be(0);
+                    div.prepend(span);
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(i + 1);
+                    expect(div.children()[0].className).to.be('bar_' + i);
+                    expect(div.children()[i].className).to.be('bar_0');
+                }
+                done();
+            });
+        });
+
+        it("should add *before* existing nodes", function(done) {
+            loadScore(['dom'], function(score) {
+                var div = score.dom.fromString('<div class="foo"><span class="bar_0"></span></div>');
+                expect(div.length).to.be(1);
+                expect(div.children().length).to.be(1);
+                var span = score.dom.fromString('<span class="bar_1"></div>');
+                div.prepend(span);
+                expect(div.length).to.be(1);
+                expect(div.children().length).to.be(2);
+                expect(div.children()[0].className).to.be('bar_1');
+                expect(div.children()[1].className).to.be('bar_0');
+                done();
+            });
+        });
+
+    });
+
 });
 
