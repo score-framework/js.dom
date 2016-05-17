@@ -83,6 +83,16 @@
                 return score.dom(this[index]);
             }},
 
+            clone: {value: function() {
+                result = Object.create(dom.proto);
+                for (i = 0; i < this.length; i++) {
+                    result.push(this[i].cloneNode(true));
+                }
+                return result;
+            }},
+
+            // queries
+
             matches: {value: function(selector) {
                 for (i = 0; i < this.length; i++) {
                     if (!dom.testMatch(this[i], selector)) {
@@ -96,13 +106,7 @@
                 return !this.length;
             }},
 
-            clone: {value: function() {
-                result = Object.create(dom.proto);
-                for (i = 0; i < this.length; i++) {
-                    result.push(this[i].cloneNode(true));
-                }
-                return result;
-            }},
+            // DOM traversal
 
             children: {value: function(selector) {
                 result = Object.create(dom.proto);
@@ -154,6 +158,8 @@
                 return result;
             }},
 
+            // node manipulation
+
             text: {value: function(text) {
                 for (i = 0; i < this.length; i++) {
                     this[i].textContent = text;
@@ -170,6 +176,8 @@
                 }
                 return this;
             }},
+
+            // DOM manipulation
 
             detach: {value: function() {
                 for (i = 0; i < this.length; i++) {
@@ -203,6 +211,12 @@
                 }
                 return this;
             }},
+
+            // css classes
+
+            // TODO: Use Element.classList when changing minimum supported
+            // Internet Explorer version to IE10:
+            // https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
 
             hasClass: {value: function(cls) {
                 if (!this.length) {
@@ -252,6 +266,22 @@
                     if (existing) {
                         this[i].className = existing.replace(re, '$3');
                     }
+                }
+                return this;
+            }},
+
+            // events
+
+            on: {value: function(event, callback) {
+                for (i = 0; i < this.length; i++) {
+                    this[i].addEventListener(event, callback);
+                }
+                return this;
+            }},
+
+            off: {value: function(event, callback) {
+                for (i = 0; i < this.length; i++) {
+                    this[i].removeEventListener(event, callback);
                 }
                 return this;
             }}
