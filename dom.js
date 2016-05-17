@@ -46,7 +46,7 @@
 
     score.extend('dom', [], function() {
 
-        var i, j, result, tmp, wrapped,
+        var i, j, result, tmp, wrapped, re, existing,
 
             matches = ['matches', 'webkitMatchesSelector', 'msMatchesSelector'].filter(function(func) {
                 return func in document.documentElement;
@@ -79,7 +79,7 @@
 
         dom.proto = Object.create(Array.prototype, {
 
-            get: {value: function(index) {
+            eq: {value: function(index) {
                 return score.dom(this[index]);
             }},
 
@@ -117,17 +117,6 @@
                 return result;
             }},
 
-            down: {value: function(selector) {
-                result = Object.create(dom.proto);
-                for (i = 0; i < this.length; i++) {
-                    tmp = dom.queryLocal(this[i], selector);
-                    for (j = 0; j < tmp.length; j++) {
-                        result.push(tmp[j]);
-                    }
-                }
-                return result;
-            }},
-
             parent: {value: function(selector) {
                 result = Object.create(dom.proto);
                 for (i = 0; i < this.length; i++) {
@@ -139,27 +128,52 @@
                 return result;
             }},
 
-            up: {value: function(selector) {
+            find: {value: function(selector) {
                 result = Object.create(dom.proto);
                 for (i = 0; i < this.length; i++) {
-                    tmp = this[i].parentNode;
-                    if (!selector || dom.testMatch(tmp, selector)) {
-                        result.push(tmp);
+                    tmp = dom.queryLocal(this[i], selector);
+                    for (j = 0; j < tmp.length; j++) {
+                        result.push(tmp[j]);
                     }
                 }
                 return result;
             }},
 
-            detach: {value: function() {
+            closest: {value: function(selector) {
+                result = Object.create(dom.proto);
                 for (i = 0; i < this.length; i++) {
-                    this[i].parentNode.removeChild(this[i]);
+                    tmp = this[i].parentNode;
+                    while (tmp) {
+                        if (dom.testMatch(tmp, selector)) {
+                            result.push(tmp);
+                            break;
+                        }
+                        tmp = tmp.parentNode;
+                    }
                 }
-                return this;
+                return result;
             }},
 
             text: {value: function(text) {
                 for (i = 0; i < this.length; i++) {
                     this[i].textContent = text;
+                }
+                return this;
+            }},
+
+            attr: {value: function(attribute, value) {
+                if (typeof value == 'undefined') {
+                    return this[i].getAttribute(attribute);
+                }
+                for (i = 0; i < this.length; i++) {
+                    this[i].setAttribute(attribute, value);
+                }
+                return this;
+            }},
+
+            detach: {value: function() {
+                for (i = 0; i < this.length; i++) {
+                    this[i].parentNode.removeChild(this[i]);
                 }
                 return this;
             }},
@@ -186,6 +200,58 @@
                 wrapped = score.dom(value);
                 for (i = 0; i < wrapped.length; i++) {
                     this[0].insertBefore(wrapped[i], tmp);
+                }
+                return this;
+            }},
+
+            hasClass: {value: function(cls) {
+                if (!this.length) {
+                    return false;
+                }
+                re = new RegExp('(^|\\s+)(' + cls + ')(\\s+|$)');
+                for (i = 0; i < this.length; i++) {
+                    if (!this[i].className.match(re)) {
+                        return false;
+                    }
+                }
+                return true;
+            }},
+
+            addClass: {value: function(cls) {
+                re = new RegExp('(^|\\s+)(' + cls + ')(\\s+|$)');
+                for (i = 0; i < this.length; i++) {
+                    existing = this[i].className;
+                    if (!existing) {
+                        this[i].className = cls;
+                    } else if (!existing.match(re)) {
+                        this[i].className = existing + ' ' + cls;
+                    }
+                }
+                return this;
+            }},
+
+            toggleClass: {value: function(cls) {
+                re = new RegExp('(^|\\s+)(' + cls + ')(\\s+|$)');
+                for (i = 0; i < this.length; i++) {
+                    existing = this[i].className;
+                    if (!existing) {
+                        this[i].className = cls;
+                    } else if (existing.match(re)) {
+                        this[i].className = existing.replace(re, '$3');
+                    } else {
+                        this[i].className = existing + ' ' + cls;
+                    }
+                }
+                return this;
+            }},
+
+            removeClass: {value: function(cls) {
+                re = new RegExp('(^|\\s+)(' + cls + ')(\\s+|$)');
+                for (i = 0; i < this.length; i++) {
+                    existing = this[i].className;
+                    if (existing) {
+                        this[i].className = existing.replace(re, '$3');
+                    }
                 }
                 return this;
             }}

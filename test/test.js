@@ -152,9 +152,9 @@ describe('score.dom', function() {
                 expect(span.children().length).to.be(0);
                 div.append(span);
                 expect(div.children().length).to.be(1);
-                expect(div.get(0).length).to.be(1);
-                expect(div.get(0).children().length).to.be(1);
-                expect(div.get(1).children().length).to.be(0);
+                expect(div.eq(0).length).to.be(1);
+                expect(div.eq(0).children().length).to.be(1);
+                expect(div.eq(1).children().length).to.be(0);
                 done();
             });
         });
@@ -207,9 +207,9 @@ describe('score.dom', function() {
                 expect(span.children().length).to.be(0);
                 div.prepend(span);
                 expect(div.children().length).to.be(1);
-                expect(div.get(0).length).to.be(1);
-                expect(div.get(0).children().length).to.be(1);
-                expect(div.get(1).children().length).to.be(0);
+                expect(div.eq(0).length).to.be(1);
+                expect(div.eq(0).children().length).to.be(1);
+                expect(div.eq(1).children().length).to.be(0);
                 done();
             });
         });
@@ -244,6 +244,30 @@ describe('score.dom', function() {
                 expect(div.children().length).to.be(2);
                 expect(div.children()[0].className).to.be('bar_1');
                 expect(div.children()[1].className).to.be('bar_0');
+                done();
+            });
+        });
+
+    });
+
+    describe('class manipulation', function() {
+
+        it('should detect that the "#fixture" tag has no `foo` class', function(done) {
+            loadScore(['dom'], function(score) {
+                var fixture = score.dom('#fixture');
+                expect(fixture.hasClass('foo')).to.be(false);
+                done();
+            });
+        });
+
+        it('should be able to add and remove a class to the "#fixture" tag', function(done) {
+            loadScore(['dom'], function(score) {
+                var fixture = score.dom('#fixture');
+                expect(fixture.hasClass('foo')).to.be(false);
+                expect(fixture.addClass('foo')).to.be(fixture);
+                expect(fixture.hasClass('foo')).to.be(true);
+                expect(fixture.removeClass('foo')).to.be(fixture);
+                expect(fixture.hasClass('foo')).to.be(false);
                 done();
             });
         });
