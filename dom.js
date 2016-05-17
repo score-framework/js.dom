@@ -46,7 +46,7 @@
 
     score.extend('dom', [], function() {
 
-        var i, j, result, tmp,
+        var i, j, result, tmp, wrapped,
 
             matches = ['matches', 'webkitMatchesSelector', 'msMatchesSelector'].filter(function(func) {
                 return func in document.documentElement;
@@ -55,8 +55,16 @@
             dom = function(arg) {
                 result = Object.create(dom.proto);
                 if (arg) {
-                    if (Array.isArray(arg)) {
+                    if (Object.getPrototypeOf(arg) == dom.proto || Array.isArray(arg)) {
+                        for (i = 0; i < arg.length; i++) {
+                            result.push(arg[i]);
+                        }
+                    } else if (Array.isArray(arg)) {
                         result.concat(arg);
+                    } else if (/\[object (HTMLCollection|NodeList)\]/.test(Object.prototype.toString.call(arg))) {
+                        for (i = 0; i < arg.length; i++) {
+                            result.push(arg[i]);
+                        }
                     } else if (typeof arg == 'object') {
                         result.push(arg);
                     } else {
@@ -70,6 +78,10 @@
             };
 
         dom.proto = Object.create(Array.prototype, {
+
+            get: {value: function(index) {
+                return score.dom(this[index]);
+            }},
 
             matches: {value: function(selector) {
                 for (i = 0; i < this.length; i++) {
@@ -136,9 +148,55 @@
                     }
                 }
                 return result;
+            }},
+
+            detach: {value: function() {
+                for (i = 0; i < this.length; i++) {
+                    this[i].parentNode.removeChild(this[i]);
+                }
+                return this;
+            }},
+
+            text: {value: function(text) {
+                for (i = 0; i < this.length; i++) {
+                    this[i].textContent = text;
+                }
+                return this;
+            }},
+
+            append: {value: function(value) {
+                if (!this.length) {
+                    return this;
+                }
+                wrapped = score.dom(value);
+                for (i = 0; i < wrapped.length; i++) {
+                    this[0].appendChild(wrapped[i]);
+                }
+                return this;
+            }},
+
+            prepend: {value: function(value) {
+                if (!this.length) {
+                    return this;
+                }
+                if (!this[0].children.length) {
+                    return this.append(value);
+                }
+                tmp = this[0].children[0];
+                wrapped = score.dom(value);
+                for (i = 0; i < wrapped.length; i++) {
+                    this[0].insertBefore(wrapped[i], tmp);
+                }
+                return this;
             }}
 
         });
+
+        dom.fromString = function(html) {
+            var div = document.createElement('div');
+            div.insertAdjacentHTML('afterbegin', html);
+            return score.dom(div.children).detach();
+        };
 
         dom.queryGlobal = document.querySelectorAll.bind(document);
 
