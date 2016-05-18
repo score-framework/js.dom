@@ -304,7 +304,7 @@
             return node[matches](selector);
         };
 
-        dom.__version__ = '0.0.2';
+        dom.__version__ = '0.0.3';
 
         return dom;
 
