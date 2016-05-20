@@ -169,7 +169,9 @@
 
             attr: {value: function(attribute, value) {
                 if (typeof value == 'undefined') {
-                    return this[i].getAttribute(attribute);
+                    for (i = 0; i < this.length; i++) {
+                        return this[i].getAttribute(attribute);
+                    }
                 }
                 for (i = 0; i < this.length; i++) {
                     this[i].setAttribute(attribute, value);
