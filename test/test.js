@@ -250,6 +250,34 @@ describe('score.dom', function() {
 
     });
 
+    describe('#attr', function() {
+
+        it('should return the correct id of "#fixture"', function(done) {
+            loadScore(['dom'], function(score) {
+                var fixture = score.dom('#fixture');
+                expect(fixture.attr('id')).to.be('fixture');
+                done();
+            });
+        });
+
+        it('should return the attribute of the *first* node', function(done) {
+            loadScore(['dom'], function(score) {
+                var nodes = score.dom.fromString('<span class="foo"></span><span class="bar"></span>');
+                expect(nodes.attr('class')).to.be('foo');
+                done();
+            });
+        });
+
+        it('should throw an Error when operating on an empty node list', function(done) {
+            loadScore(['dom'], function(score) {
+                var empty = score.dom();
+                expect(function() { empty.attr('id'); }).to.throwError();
+                done();
+            });
+        });
+
+    });
+
     describe('class manipulation', function() {
 
         it('should detect that the "#fixture" tag has no `foo` class', function(done) {

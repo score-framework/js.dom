@@ -169,7 +169,11 @@
 
             attr: {value: function(attribute, value) {
                 if (typeof value == 'undefined') {
-                    return this[i].getAttribute(attribute);
+                    if (this.length) {
+                        return this[0].getAttribute(attribute);
+                    } else {
+                        throw new Error('Empty list');
+                    }
                 }
                 for (i = 0; i < this.length; i++) {
                     this[i].setAttribute(attribute, value);
