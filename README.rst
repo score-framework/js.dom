@@ -1,3 +1,6 @@
+.. image:: https://raw.githubusercontent.com/score-framework/py.doc/master/docs/score-banner.png
+    :target: http://score-framework.org
+
 `The SCORE Framework`_ is a collection of harmonized python and javascript
 libraries for the development of large scale web projects. Powered by strg.at_.
 
@@ -11,9 +14,87 @@ score.dom
 
 .. _js_dom:
 
-DOM Manipulation for The SCORE Framework.
+This module provides a convenient wrapper for DOM nodes. Its API resembles that
+of jQuery, since this has become the best known DOM manipulation API over time.
 
-This module is a work in progress, thus currently poorly documented :-/
+Quickstart
+==========
+
+.. code-block:: html
+
+    <script src="score.init.js"></script>
+    <script src="score.dom.js"></script>
+    <script>
+        (function() {
+            var romans = score.dom('.roman');
+            score.dom('.home').append(romans);
+        })();
+    </script>
+
+Details
+=======
+
+Constructor
+-----------
+
+The "constructor" [1]_ will return an object deriving from ``score.dom.proto``.
+It accepts either of the following:
+
+- *Nothing*: Creates an empty node list.
+  
+.. code-block:: javascript
+
+      score.dom()
+
+- Selector: Selects all nodes matching the selector globally
+
+.. code-block:: javascript
+
+      score.dom('body')
+
+- NodeList object:
+
+.. code-block:: javascript
+
+      score.dom(document.getElementsByTagName('a'))
+
+- A ``score.dom`` object:
+
+.. code-block:: javascript
+
+      var bodyNode = score.dom('body');
+      score.dom(bodyNode).addClass('foo');
+
+
+.. [1] The term *constructor* is actually incorrect, as ``score.dom`` is just a
+       normal function.
+
+CSS Class Manipulation
+----------------------
+
+The module allows adding/removing css classes using the usual method names:
+
+.. code-block:: javascript
+
+    if (score.dom('body').hasClass('spam')) {
+        score.dom('.knight').addClass('ni');
+        score.dom('#cheese-shop').removeClass('cheese');
+        score.dom('.self-defense').toggleClass('fruit');
+    }
+
+DOM restructuring
+-----------------
+
+You can remove nodes from the DOM using ``detach()``, and attach them beneath
+another given node using ``prepend()`` or ``append()``, depending on whether
+they should be inserted at the beginning, or the end of the children list:
+
+.. code-block:: javascript
+
+    score.dom('.parrot').detach();
+    score.dom('.fruits').append(score.dom.fromString('<li>Banana</li>'));
+    score.dom('.fruits').prepend(score.dom.fromString('<li>Carrot</li>'));
+    score.dom('.fruits').children().eq(0).text() // 'Carrot'
 
 
 License
