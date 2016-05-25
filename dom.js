@@ -79,14 +79,38 @@
 
         dom.proto = Object.create(Array.prototype, {
 
+            // filtering
+
+            first: {get: function() {
+                if (!this.length) {
+                    throw new Error('Empty list');
+                }
+                return score.dom(this[0]);
+            }},
+
             eq: {value: function(index) {
                 return score.dom(this[index]);
             }},
 
-            clone: {value: function() {
+            uniq: {value: function(index) {
                 result = Object.create(dom.proto);
                 for (i = 0; i < this.length; i++) {
-                    result.push(this[i].cloneNode(true));
+                    if (result.indexOf(this[i]) < 0) {
+                        result.push(this[i]);
+                    }
+                }
+                return result;
+            }},
+
+            // clone
+
+            clone: {value: function(deep) {
+                if (typeof deep == 'undefined') {
+                    deep = true;
+                }
+                result = Object.create(dom.proto);
+                for (i = 0; i < this.length; i++) {
+                    result.push(this[i].cloneNode(deep));
                 }
                 return result;
             }},
@@ -94,6 +118,9 @@
             // queries
 
             matches: {value: function(selector) {
+                if (!this.length) {
+                    throw new Error('Empty list');
+                }
                 for (i = 0; i < this.length; i++) {
                     if (!dom.testMatch(this[i], selector)) {
                         return false;
@@ -158,22 +185,27 @@
                 return result;
             }},
 
-            // node manipulation
+            // node operations
 
-            text: {value: function(text) {
+            text: {value: function(value) {
+                if (typeof value == 'undefined') {
+                    if (!this.length) {
+                        throw new Error('Empty list');
+                    }
+                    return this[0].textContent;
+                }
                 for (i = 0; i < this.length; i++) {
-                    this[i].textContent = text;
+                    this[i].textContent = value;
                 }
                 return this;
             }},
 
             attr: {value: function(attribute, value) {
                 if (typeof value == 'undefined') {
-                    if (this.length) {
-                        return this[0].getAttribute(attribute);
-                    } else {
+                    if (!this.length) {
                         throw new Error('Empty list');
                     }
+                    return this[0].getAttribute(attribute);
                 }
                 for (i = 0; i < this.length; i++) {
                     this[i].setAttribute(attribute, value);
@@ -181,7 +213,7 @@
                 return this;
             }},
 
-            // DOM manipulation
+            // restructuring
 
             detach: {value: function() {
                 for (i = 0; i < this.length; i++) {

@@ -68,6 +68,99 @@ describe('score.dom', function() {
 
     });
 
+    describe('#uniq', function() {
+
+        before(function() {
+            var fixture = document.getElementById('fixture');
+            for (var i = 0; i < 5; i++) {
+                var div = document.createElement('div');
+                div.className = 'lvl2';
+                fixture.appendChild(div);
+                for (var j = 0; j < 5; j++) {
+                    var span = document.createElement('span');
+                    span.className = 'lvl3';
+                    div.appendChild(span);
+                }
+            }
+        });
+
+        after(function() {
+            var fixture = document.getElementById('fixture');
+            while (fixture.children.length) {
+                fixture.removeChild(fixture.children[0]);
+            }
+        });
+
+        it('should return a score.dom object', function(done) {
+            loadScore(['dom'], function(score) {
+                var lvl3 = score.dom('#fixture').find('.lvl3');
+                expect(lvl3.uniq).to.be.a('function');
+                expect(lvl3.uniq()).to.be.an('object');
+                done();
+            });
+        });
+
+        it('should keep non-duplicates intact and in order', function(done) {
+            loadScore(['dom'], function(score) {
+                var lvl3 = score.dom('#fixture').find('.lvl3');
+                expect(lvl3.uniq).to.be.a('function');
+                var uniq = lvl3.uniq();
+                expect(uniq.length).to.be(lvl3.length);
+                for (var i = 0; i < lvl3.length; i++) {
+                    expect(uniq[i]).to.be(lvl3[i]);
+                }
+                done();
+            });
+        });
+
+        it('should remove duplicate DOM nodes from list', function(done) {
+            loadScore(['dom'], function(score) {
+                var lvl3 = score.dom('#fixture').find('.lvl3');
+                expect(lvl3.length).to.be(25);
+                var parents = lvl3.parent();
+                expect(parents.length).to.be(25);
+                expect(parents.uniq().length).to.be(5);
+                done();
+            });
+        });
+
+    });
+
+    describe('#find', function() {
+
+        before(function() {
+            var fixture = document.getElementById('fixture');
+            for (var i = 0; i < 5; i++) {
+                var div = document.createElement('div');
+                div.className = 'lvl2';
+                fixture.appendChild(div);
+                for (var j = 0; j < 5; j++) {
+                    var span = document.createElement('span');
+                    span.className = 'lvl3';
+                    div.appendChild(span);
+                }
+            }
+        });
+
+        after(function() {
+            var fixture = document.getElementById('fixture');
+            while (fixture.children.length) {
+                fixture.removeChild(fixture.children[0]);
+            }
+        });
+
+        it('should operate on all nodes', function(done) {
+            loadScore(['dom'], function(score) {
+                var lvl2 = score.dom('#fixture').find('.lvl2');
+                var lvl3 = score.dom('#fixture').find('.lvl3');
+                expect(lvl3.length).to.be(25);
+                expect(lvl2.find('.lvl3').length).to.be(lvl3.length);
+                done();
+            });
+        });
+
+    });
+
     describe('#empty', function() {
 
         it('should return true for an empty object', function(done) {
@@ -80,6 +173,13 @@ describe('score.dom', function() {
         it("should return false when selecting '#fixture'", function(done) {
             loadScore(['dom'], function(score) {
                 expect(score.dom('#fixture').empty()).to.be(false);
+                done();
+            });
+        });
+
+        it("should return true when selecting children of '#fixture'", function(done) {
+            loadScore(['dom'], function(score) {
+                expect(score.dom('#fixture').children().empty()).to.be(true);
                 done();
             });
         });
