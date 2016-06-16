@@ -81,7 +81,7 @@ allowing you to use all array features:
     var nodes = score.dom('.spam');
     nodes.length; // 3
     nodes[0]; // A native HTMLDivElement: <div class="spam">...</div>
-    nodes.each(function(node) {
+    nodes.forEach(function(node) {
         // node is, again, a native DOM node
     });
 
