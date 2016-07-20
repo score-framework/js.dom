@@ -55,7 +55,7 @@
             dom = function(arg) {
                 result = Object.create(dom.proto);
                 if (arg) {
-                    if (Object.getPrototypeOf(arg) == dom.proto || Array.isArray(arg)) {
+                    if (typeof arg !== 'string' && Object.getPrototypeOf(arg) == dom.proto || Array.isArray(arg)) {                        
                         for (i = 0; i < arg.length; i++) {
                             result.push(arg[i]);
                         }
