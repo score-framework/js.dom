@@ -55,10 +55,8 @@
             dom = function(arg) {
                 result = Object.create(dom.proto);
                 if (arg) {
-                    if (Object.getPrototypeOf(arg) == dom.proto || Array.isArray(arg)) {
-                        for (i = 0; i < arg.length; i++) {
-                            result.push(arg[i]);
-                        }
+                    if (typeof arg == 'object' && Object.getPrototypeOf(arg) == dom.proto) {
+                        result = arg;
                     } else if (Array.isArray(arg)) {
                         result.concat(arg);
                     } else if (/\[object (HTMLCollection|NodeList)\]/.test(Object.prototype.toString.call(arg))) {
