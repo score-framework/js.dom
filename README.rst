@@ -14,6 +14,9 @@ score.dom
 
 .. _js_dom:
 
+.. image:: https://travis-ci.org/score-framework/js.init.svg?branch=master
+    :target: https://travis-ci.org/score-framework/js.init
+
 This module provides a convenient wrapper for DOM nodes. Its API resembles that
 of jQuery, since this has become the best known DOM manipulation API over time.
 
