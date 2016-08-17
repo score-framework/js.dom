@@ -1,19 +1,25 @@
 function loadScript(url, callback) {
-    var timeout, script = document.createElement('script');
+    var maxTimeout, ieTimeout, iePoller, script = document.createElement('script');
     script.onload = function() {
+        script.onload = function() {};
         script.parentNode.removeChild(script);
-        if (window && typeof window.clearTimeout === 'function') {
-            window.clearTimeout(timeout);
-        }
+        window.clearTimeout(maxTimeout);
+        window.clearTimeout(ieTimeout);
         callback();
     };
     script.src = url;
-    document.head.appendChild(script);
-    if (window && typeof window.setTimeout === 'function') {
-        timeout = window.setTimeout(function() {
-            throw new Error('Failed to load script: ' + url);
-        }, 1000);
-    }
+    document.body.appendChild(script);
+    iePoller = function() {
+        if (script.readyState == 'loaded' || script.readyState == 'complete') {
+            script.onload();
+        } else {
+            ieTimeout = window.setTimeout(iePoller, 10);
+        }
+    };
+    iePoller();
+    maxTimeout = window.setTimeout(function() {
+        throw new Error('Failed to load script: ' + url);
+    }, 1000);
 }
 
 function loadScoreModule(module, callback) {
@@ -21,11 +27,11 @@ function loadScoreModule(module, callback) {
     if (testConf[module] === 'local') {
         url = '../' + module + '.js';
     } else if (testConf[module]) {
-        url = 'https://raw.githubusercontent.com/score-framework/js.' + module + '/' + testConf[module] + '/' + module + '.js';
+        url = 'https://cdn.rawgit.com/score-framework/js.' + module + '/' + testConf[module] + '/' + module + '.js';
     } else {
-        url = 'https://raw.githubusercontent.com/score-framework/js.' + module + '/master/' + module + '.js';
+        url = 'https://cdn.rawgit.com/score-framework/js.' + module + '/1299fade1c6dede0e681a2aeff5af86f4b3b2f01/' + module + '.js';
     }
-    loadScript(url, callback);
+    loadScript(url + '?_=' + new Date().getTime(), callback);
 }
 
 function loadScoreModules(modules, callback) {
