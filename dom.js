@@ -189,6 +189,8 @@
                 if (typeof value == 'undefined') {
                     if (!this.length) {
                         throw new Error('Empty list');
+                    } else if (this.length > 1) {
+                        throw new Error('Attempting Single-Node-Operation on multiple nodes');
                     }
                     return this[0].textContent;
                 }
@@ -202,6 +204,8 @@
                 if (typeof value == 'undefined') {
                     if (!this.length) {
                         throw new Error('Empty list');
+                    } else if (this.length > 1) {
+                        throw new Error('Attempting Single-Node-Operation on multiple nodes');
                     }
                     return this[0].getAttribute(attribute);
                 }
@@ -222,7 +226,9 @@
 
             append: {value: function(value) {
                 if (!this.length) {
-                    return this;
+                    throw new Error('Empty list');
+                } else if (this.length > 1) {
+                    throw new Error('Attempting Single-Node-Operation on multiple nodes');
                 }
                 wrapped = score.dom(value);
                 for (i = 0; i < wrapped.length; i++) {
@@ -233,7 +239,9 @@
 
             prepend: {value: function(value) {
                 if (!this.length) {
-                    return this;
+                    throw new Error('Empty list');
+                } else if (this.length > 1) {
+                    throw new Error('Attempting Single-Node-Operation on multiple nodes');
                 }
                 if (!this[0].children.length) {
                     return this.append(value);
