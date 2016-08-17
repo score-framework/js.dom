@@ -10,6 +10,7 @@
             var requirejs, require, define, score;
             mocha.setup({
                 ui: 'bdd',
+                timeout: 5000,
                 checkLeaks: true
             });
             window.onload = function() { mocha.run(); }

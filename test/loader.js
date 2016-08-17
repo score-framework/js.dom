@@ -19,7 +19,7 @@ function loadScript(url, callback) {
     iePoller();
     maxTimeout = window.setTimeout(function() {
         throw new Error('Failed to load script: ' + url);
-    }, 1000);
+    }, 4000);
 }
 
 function loadScoreModule(module, callback) {
