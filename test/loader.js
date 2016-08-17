@@ -29,7 +29,7 @@ function loadScoreModule(module, callback) {
     } else if (testConf[module]) {
         url = 'https://cdn.rawgit.com/score-framework/js.' + module + '/' + testConf[module] + '/' + module + '.js';
     } else {
-        url = 'https://cdn.rawgit.com/score-framework/js.' + module + '/1299fade1c6dede0e681a2aeff5af86f4b3b2f01/' + module + '.js';
+        url = 'https://cdn.rawgit.com/score-framework/js.' + module + '/master/' + module + '.js';
     }
     loadScript(url + '?_=' + new Date().getTime(), callback);
 }
