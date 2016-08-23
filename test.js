@@ -406,6 +406,18 @@ describe('score.dom', function() {
 
     describe('#attr', function() {
 
+        it('should return null if the attribute does not exist', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var node = score.dom.fromString('<span></span>');
+                    expect(node.attr('class')).to.be(null);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
         it('should return the correct id of "#fixture"', function(done) {
             loadScore(['dom'], function(score) {
                 try {
@@ -418,11 +430,25 @@ describe('score.dom', function() {
             });
         });
 
-        it('should return the attribute of the *first* node', function(done) {
+        it('should return throw an exception, if called on multile nodes', function(done) {
             loadScore(['dom'], function(score) {
                 try {
                     var nodes = score.dom.fromString('<span class="foo"></span><span class="bar"></span>');
-                    expect(nodes.first.attr('class')).to.be('foo');
+                    expect(function() { nodes.attr('class'); }).to.throwError();
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should remove attributes if called with value null', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var nodes = score.dom.fromString('<span class="foo"></span><span class="bar"></span>');
+                    nodes.attr('class', null);
+                    expect(nodes.eq(0).attr('class')).to.be(null);
+                    expect(nodes.eq(1).attr('class')).to.be(null);
                     done();
                 } catch (e) {
                     done(e);

@@ -218,8 +218,14 @@
                     }
                     return this[0].getAttribute(attribute);
                 }
-                for (i = 0; i < this.length; i++) {
-                    this[i].setAttribute(attribute, value);
+                if (value === null) {
+                    for (i = 0; i < this.length; i++) {
+                        this[i].removeAttribute(attribute);
+                    }
+                } else {
+                    for (i = 0; i < this.length; i++) {
+                        this[i].setAttribute(attribute, value);
+                    }
                 }
                 return this;
             }},
