@@ -345,10 +345,16 @@
 
         });
 
+        dom.create = function(node) {
+            result = Object.create(dom.proto);
+            result.push(document.createElement(node));
+            return result;
+        };
+
         dom.fromString = function(html) {
-            var div = document.createElement('div');
-            div.insertAdjacentHTML('afterbegin', html);
-            return score.dom(div.children).detach();
+            tmp = document.createElement('div');
+            tmp.insertAdjacentHTML('afterbegin', html);
+            return score.dom(tmp.children).detach();
         };
 
         dom.queryGlobal = document.querySelectorAll.bind(document);
