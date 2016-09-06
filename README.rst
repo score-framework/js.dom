@@ -177,7 +177,14 @@ There are two operations you can perform on individual nodes:
   .. code-block:: javascript
 
       score.dom('#parrot').attr('data-state', 'deceased');
-      score.dom('.customer').attr('data-state');  // Value for the first customer
+      // Value for the first customer
+      score.dom('.customer').attr('data-state');
+
+      // Add an attribute with no value
+      score.dom('.submit').attr('disabled');
+
+      // Remove an attribute
+      score.dom('.submit').attr('disabled',NULL);
 
 .. _textContent: https://developer.mozilla.org/en/docs/Web/API/Node/textContent 
 
