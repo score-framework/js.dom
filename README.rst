@@ -72,6 +72,18 @@ It accepts either of the following:
 .. [1] The term *constructor* is actually incorrect, as ``score.dom`` is just a
        normal function.
 
+Creating new nodes
+------------------
+
+The constructor above is for wrapping already existing DOM nodes. It is also
+possible to create score.dom objects with brand new nodes by using the
+``create()`` function:
+
+.. code-block:: javascript
+
+    var node = score.dom.create('div');
+
+
 score.dom Object
 ----------------
 
@@ -84,13 +96,20 @@ allowing you to use all array features:
     var nodes = score.dom('.spam');
     nodes.length; // 3
     nodes[0]; // A native HTMLDivElement: <div class="spam">...</div>
+
+There is just one exception: we are overriding the ``forEach()`` function to
+provide score.dom objects:
+
+.. code-block:: javascript
+
     nodes.forEach(function(node) {
-        // node is, again, a native DOM node
+        // node is a score.dom object
+        console.log(node.attr('class'));
     });
 
-This also means that all operations are always performed on *all* nodes in your
-object. This might come as a surprise in certain cases, where jQuery is a bit
-inconsistent:
+Since score.dom objects are actually arrays, all operations are always
+performed on *all* nodes in your array. This might come as a surprise in
+certain cases, where jQuery is a bit inconsistent:
 
 .. code-block:: javascript
 
@@ -113,6 +132,60 @@ inconsistent:
     score.dom('.customer').parent().uniq().length; // 1
 
 
+Safety Measures
+---------------
+
+Apart from simplifying the complex DOM API, this module also tries to aid
+development by throwing errors, whenever it assumes that something might have
+gone wrong.  Currently, we have two distinct checks for some of the operations
+available. Note, that the precautions are tied to *operations*, not whole
+*functions*: Some usage of the function might have a different set of
+constraints than another.
+
+.. _js_dom_min:
+
+Minimum Length 1
+````````````````
+
+Some operations intend to change a node. These operations will fail, if the
+score.dom object is empty:
+
+.. code-block:: javascript
+
+    // create a new node:
+    var banana = score.dom.create('span').addClass('banana');
+    // select an existing node from the document
+    var fruits = score.dom('#fruits')
+    // What we're not realizing at this point is that our colleague has changed
+    // the ID of the "fruits"-node to "weapons", and that our fruits-variable
+    // is nothing but an empty array. This is why the next function will cause
+    // an Error to be thrown:
+    fruits.append(banana);  // Error: "Empty list"
+
+
+.. _js_dom_sno:
+
+Single Node Operations
+``````````````````````
+
+Some operations are marked as Single Node Operations (SNO for short). These
+operations will fail if the score.dom object contains more than one element:
+
+.. code-block:: javascript
+
+    try {
+        var nodes = score.dom('.spam');
+        if (nodes.length > 1) {
+            // this will throw an error since we
+            // have more than one node:
+            nodes.text()
+        }
+    } catch (e) {
+        console.log(e);  // "Attempting Single-Node-Operation on multiple nodes"
+    }
+
+
+
 Filtering
 ---------
 
@@ -120,14 +193,14 @@ If you have a ``score.dom`` object, you can reduce its list of nodes using the
 following methods:
 
 * ``eq(index)`` will return a new ``score.dom`` object containing a single
-  node, the one at the given index.
-* The dynamic value ``first`` returns the same as ``eq(0)``, unless the object
-  is empty, in which case it will throw an Error:
+  node, the one at the given index. Will throw an Error, if the index it out of
+  range.
+* The dynamic value ``first`` returns the same as ``eq(0)``:
 
   .. code-block:: javascript
 
-      score.dom('.knight').first // The first knight
-      score.dom('#cheese-shop').find('.cheese').first // throws an Error
+      score.dom('.knight').first;  // The first knight
+      score.dom('#cheese-shop').find('.cheese').first;  // throws an Error
 
 * The function ``uniq()`` will remove duplicates from your node list:
 
@@ -146,12 +219,19 @@ The represented Nodes can be duplicated using ``clone()``:
     var spams = score.dom('.spam');
     spams.first.parent().append(spams.clone());
 
+The function makes deep clones of all elements unless called with ``false``:
+
+.. code-block:: javascript
+
+    var spams = score.dom('.spam');
+    var shallowCopies = spams.clone(false);
+
 
 Querying
 --------
 
-You can query, if all nodes in your list match a given selector using
-``matches()``:
+You can query, if *all* nodes in your list match a given selector using
+``matches()`` (`min1 <js_dom_min_>`_):
 
 .. code-block:: javascript
 
@@ -164,30 +244,42 @@ Node Operations
 
 There are two operations you can perform on individual nodes:
 
-* ``text()`` will return the textContent_ of the first node, or set the
-  textContent of all nodes to a given value:
+* ``text()`` will return the textContent_ of the node (`sno <js_dom_sno_>`_)
+  or set the textContent of all nodes to a given value:
 
   .. code-block:: javascript
 
+      // setting the text content:
       score.dom('body').text('hello world');
-      score.dom('body').text(); // hello world
+
+      // retrieving the text content (sno):
+      score.dom('body').text();
 
 * ``attr()`` does the same for the value of an attribute:
 
   .. code-block:: javascript
 
+      // setting an attribute:
       score.dom('#parrot').attr('data-state', 'deceased');
-      score.dom('.customer').attr('data-state');  // Value for the first customer
+
+      // getting the value of an attribute (sno)
+      // (returns null if attribute does not exist):
+      score.dom('.customer').attr('data-state');
+
+      // removing an attribute:
+      score.dom('.customer').attr('data-state', null);
 
 .. _textContent: https://developer.mozilla.org/en/docs/Web/API/Node/textContent 
 
 Restructuring
 -------------
 
-You can remove nodes from the document using ``detach()``, and attach them
-beneath another given node using ``prepend()`` or ``append()``, depending on
-whether they should be inserted at the beginning, or the end of the children
-list:
+You can remove nodes from the document using ``detach()``, removing them from
+the DOM. You can then attach them beneath another given node using
+``prepend()`` or ``append()``, depending on whether they should be inserted at the
+beginning, or the end of the children list. Both functions are `single node
+operations <js_dom_sno_>`_ and will throw an error, if the score.dom object
+they were called on does not contain exactly one node:
 
 .. code-block:: javascript
 
