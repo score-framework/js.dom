@@ -142,14 +142,13 @@ available. Note, that the precautions are tied to *operations*, not whole
 *functions*: Some usage of the function might have a different set of
 constraints than another.
 
-.. _min1:
 .. _js_dom_min1:
 
 Minimum Length 1
 ````````````````
 
-Some operations intend to change a node. These operations will fail, if the
-score.dom object is empty:
+Some operations intend to change a node. These operations are marked (_`min1`)
+and will fail if the score.dom object is empty:
 
 .. code-block:: javascript
 
@@ -164,13 +163,12 @@ score.dom object is empty:
     fruits.append(banana);  // Error: "Empty list"
 
 
-.. _sno:
 .. _js_dom_sno:
 
 Single Node Operations
 ``````````````````````
 
-Some operations are marked as Single Node Operations (SNO for short). These
+Some operations are marked as Single Node Operations (_`sno` for short). These
 operations will fail if the score.dom object contains more than one element:
 
 .. code-block:: javascript
