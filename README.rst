@@ -142,7 +142,8 @@ available. Note, that the precautions are tied to *operations*, not whole
 *functions*: Some usage of the function might have a different set of
 constraints than another.
 
-.. _js_dom_min:
+.. _min1:
+.. _js_dom_min1:
 
 Minimum Length 1
 ````````````````
@@ -163,6 +164,7 @@ score.dom object is empty:
     fruits.append(banana);  // Error: "Empty list"
 
 
+.. _sno:
 .. _js_dom_sno:
 
 Single Node Operations
@@ -231,7 +233,7 @@ Querying
 --------
 
 You can query, if *all* nodes in your list match a given selector using
-``matches()`` (`min1 <js_dom_min_>`_):
+``matches()`` (min1_):
 
 .. code-block:: javascript
 
@@ -244,7 +246,7 @@ Node Operations
 
 There are two operations you can perform on individual nodes:
 
-* ``text()`` will return the textContent_ of the node (`sno <js_dom_sno_>`_)
+* ``text()`` will return the textContent_ of the node (sno_)
   or set the textContent of all nodes to a given value:
 
   .. code-block:: javascript
@@ -278,7 +280,7 @@ You can remove nodes from the document using ``detach()``, removing them from
 the DOM. You can then attach them beneath another given node using
 ``prepend()`` or ``append()``, depending on whether they should be inserted at the
 beginning, or the end of the children list. Both functions are `single node
-operations <js_dom_sno_>`_ and will throw an error, if the score.dom object
+operations`_ and will throw an error, if the score.dom object
 they were called on does not contain exactly one node:
 
 .. code-block:: javascript
