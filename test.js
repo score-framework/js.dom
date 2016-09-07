@@ -62,6 +62,54 @@ describe('score.dom', function() {
 
     });
 
+    describe('#eq', function() {
+
+        it('should return a score.dom object', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var nodes = score.dom.create('span');
+                    expect(nodes.length).to.be(1);
+                    var node = nodes.eq(0);
+                    expect(node).to.be.an('object');
+                    expect(Object.getPrototypeOf(node)).to.be(score.dom.proto);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should throw an error if index is out of range', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var nodes = score.dom.fromString('<span class="foo"></span><span class="bar"></span>');
+                    expect(nodes.length).to.be(2);
+                    nodes.eq(0);  // should not throw
+                    nodes.eq(1);  // should not throw
+                    expect(function() { nodes.eq(2); }).to.throwError();
+                    expect(function() { nodes.eq(3); }).to.throwError();
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should throw an error if index is negative', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var nodes = score.dom.fromString('<span class="foo"></span><span class="bar"></span>');
+                    expect(nodes.length).to.be(2);
+                    expect(function() { nodes.eq(-1); }).to.throwError();
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
     describe('#uniq', function() {
 
         before(function() {
