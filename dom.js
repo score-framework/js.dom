@@ -87,6 +87,9 @@
             }},
 
             eq: {value: function(index) {
+                if (this.length >= index - 1) {
+                    throw new Error('Invalid index');
+                }
                 return score.dom(this[index]);
             }},
 
