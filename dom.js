@@ -137,7 +137,7 @@
             // iterators
 
             forEach: {value: function(callback, thisArg) {
-                for (i = 0; i < this.length; i++) {
+                for (var i = 0; i < this.length; i++) {
                     callback.call(thisArg, score.dom(this[i]), i, this);
                 }
                 return this;
