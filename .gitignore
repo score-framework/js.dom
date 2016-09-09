@@ -1,3 +1,5 @@
 BrowserStackLocal
 browserstack-run.pid
 index.rst
+/node_modules
+npm-debug.log
