@@ -195,11 +195,13 @@ following methods:
 * ``eq(index)`` will return a new ``score.dom`` object containing a single
   node, the one at the given index. Will throw an Error, if the index it out of
   range.
-* The dynamic value ``first`` returns the same as ``eq(0)``:
+* The dynamic value ``x.first`` returns the same as ``x.eq(0)``, ``x.last``
+  returns the same as ``x.eq(x.length - 1)``:
 
   .. code-block:: javascript
 
       score.dom('.knight').first;  // The first knight
+      score.dom('.samurai').last;  // The last samurai
       score.dom('#cheese-shop').find('.cheese').first;  // throws an Error
 
 * The function ``uniq()`` will remove duplicates from your node list:

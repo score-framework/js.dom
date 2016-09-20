@@ -86,6 +86,13 @@
                 return score.dom(this[0]);
             }},
 
+            last: {get: function() {
+                if (!this.length) {
+                    throw new Error('Empty list');
+                }
+                return score.dom(this[this.length - 1]);
+            }},
+
             eq: {value: function(index) {
                 if (index < 0 || index >= this.length) {
                     throw new Error('Invalid index');
