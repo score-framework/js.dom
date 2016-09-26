@@ -415,7 +415,7 @@
             return node[matches](selector);
         };
 
-        dom.__version__ = '0.0.10';
+        dom.__version__ = '0.0.11';
 
         return dom;
 
