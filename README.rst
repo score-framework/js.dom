@@ -290,6 +290,17 @@ they were called on does not contain exactly one node:
     score.dom('.fruits').prepend(score.dom.fromString('<li>Carrot</li>'));
     score.dom('.fruits').children().first.text() // 'Carrot'
 
+Both functions also accept a second node that can serve as an anchor, if the
+insert operation should be performed at a specific position in the children
+list:
+
+.. code-block:: javascript
+
+    // insert spam *after* eggs
+    score.dom('.meal').append(spam, eggs);
+    // insert spam *before* eggs
+    score.dom('.meal').prepend(spam, eggs);
+
 
 Traversal
 ---------

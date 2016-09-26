@@ -249,32 +249,70 @@
                 return this;
             }},
 
-            append: {value: function(value) {
+            append: {value: function(value, pivot) {
                 if (!this.length) {
                     throw new Error('Empty list');
                 } else if (this.length > 1) {
                     throw new Error('Attempting Single-Node-Operation on multiple nodes');
                 }
                 wrapped = score.dom(value);
-                for (i = 0; i < wrapped.length; i++) {
-                    this[0].appendChild(wrapped[i]);
+                if (!pivot) {
+                    for (i = 0; i < wrapped.length; i++) {
+                        this[0].appendChild(wrapped[i]);
+                    }
+                } else {
+                    pivot = score.dom(pivot);
+                    if (!pivot.length) {
+                        throw new Error('Empty pivot');
+                    } else if (pivot.length > 1) {
+                        throw new Error('Received multiple pivot nodes');
+                    }
+                    if (pivot[0].parentNode !== this[0]) {
+                        throw new Error('Pivot node is not a direct child of `this`');
+                    }
+                    if (pivot[0].nextSibling) {
+                        pivot = pivot[0].nextSibling;
+                        for (i = 0; i < wrapped.length; i++) {
+                            this[0].insertBefore(wrapped[i], pivot);
+                        }
+                    } else {
+                        for (i = 0; i < wrapped.length; i++) {
+                            this[0].appendChild(wrapped[i]);
+                        }
+                    }
                 }
                 return this;
             }},
 
-            prepend: {value: function(value) {
+            prepend: {value: function(value, pivot) {
                 if (!this.length) {
                     throw new Error('Empty list');
                 } else if (this.length > 1) {
                     throw new Error('Attempting Single-Node-Operation on multiple nodes');
                 }
-                if (!this[0].children.length) {
-                    return this.append(value);
-                }
-                tmp = this[0].children[0];
                 wrapped = score.dom(value);
-                for (i = 0; i < wrapped.length; i++) {
-                    this[0].insertBefore(wrapped[i], tmp);
+                if (!pivot) {
+                    if (!this[0].children.length) {
+                        return this.append(value);
+                    }
+                    tmp = this[0].children[0];
+                    for (i = 0; i < wrapped.length; i++) {
+                        this[0].insertBefore(wrapped[i], tmp);
+                    }
+                } else {
+                    pivot = score.dom(pivot);
+                    if (!pivot.length) {
+                        throw new Error('Empty pivot');
+                    } else if (pivot.length > 1) {
+                        throw new Error('Received multiple pivot nodes');
+                    }
+                    if (pivot[0].parentNode !== this[0]) {
+                        throw new Error('Pivot node is not a direct child of `this`');
+                    }
+                    tmp = pivot[0];
+                    for (i = 0; i < wrapped.length; i++) {
+                        this[0].insertBefore(wrapped[i], tmp);
+                    }
                 }
                 return this;
             }},

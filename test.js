@@ -395,6 +395,50 @@ describe('score.dom', function() {
             });
         });
 
+        it("should bail on invalid pivot", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var div = score.dom.fromString('<div class="foo"><span class="bar_0"><span class="bar_0_0"></span></span></div>');
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(1);
+                    expect(div.children().children().length).to.be(1);
+                    var span = score.dom.fromString('<span class="bar_1"></div>');
+                    expect(function() { div.append(span, div); }).to.throwError();
+                    expect(function() { div.append(span, 1); }).to.throwError();
+                    expect(function() { div.append(span, div.find('.bar_0_0')); }).to.throwError();
+                    expect(function() { div.append(span, div.find('.doesnt-exist')); }).to.throwError();
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(1);
+                    expect(div.children().children().length).to.be(1);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should insert at correct position when pivot is provided", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var div = score.dom.fromString('<div class="foo"><span class="bar_0"></span><span class="bar_2"></span></div>');
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(2);
+                    var span = score.dom.fromString('<span class="bar_1"></div>');
+                    div.append(span, div.children()[0]);
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(3);
+                    expect(div.children()[1]).to.be(span[0]);
+                    div.append(span, div.children()[2]);
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(3);
+                    expect(div.children()[2]).to.be(span[0]);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
     });
 
     describe('#forEach', function() {
@@ -493,6 +537,50 @@ describe('score.dom', function() {
                     expect(div.children().length).to.be(2);
                     expect(div.children()[0].className).to.be('bar_1');
                     expect(div.children()[1].className).to.be('bar_0');
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should bail on invalid pivot", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var div = score.dom.fromString('<div class="foo"><span class="bar_0"><span class="bar_0_0"></span></span></div>');
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(1);
+                    expect(div.children().children().length).to.be(1);
+                    var span = score.dom.fromString('<span class="bar_1"></div>');
+                    expect(function() { div.prepend(span, div); }).to.throwError();
+                    expect(function() { div.prepend(span, 1); }).to.throwError();
+                    expect(function() { div.prepend(span, div.find('.bar_0_0')); }).to.throwError();
+                    expect(function() { div.prepend(span, div.find('.doesnt-exist')); }).to.throwError();
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(1);
+                    expect(div.children().children().length).to.be(1);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should insert at correct position when pivot is provided", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var div = score.dom.fromString('<div class="foo"><span class="bar_0"></span><span class="bar_2"></span></div>');
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(2);
+                    var span = score.dom.fromString('<span class="bar_1"></div>');
+                    div.prepend(span, div.children()[0]);
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(3);
+                    expect(div.children()[0]).to.be(span[0]);
+                    div.prepend(span, div.children()[2]);
+                    expect(div.length).to.be(1);
+                    expect(div.children().length).to.be(3);
+                    expect(div.children()[1]).to.be(span[0]);
                     done();
                 } catch (e) {
                     done(e);
