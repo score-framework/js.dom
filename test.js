@@ -1,3 +1,5 @@
+/* global loadScore:true, expect:true, describe, it, before, after */
+
 if (typeof loadScore == 'undefined') {
     var tmp = require('./node.js');
     loadScore = tmp.loadScore;
@@ -320,7 +322,7 @@ describe('score.dom', function() {
         it("should not attach the newly created nodes into the DOM at any time", function(done) {
             loadScore(['dom'], function(score) {
                 try {
-                    var div = score.dom.fromString('<script>alert("Test failed!");</script>');
+                    score.dom.fromString('<script>alert("Test failed!");</script>');
                     done();
                 } catch (e) {
                     done(e);
