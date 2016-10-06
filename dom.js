@@ -86,6 +86,15 @@
                 return score.dom(this[0]);
             }},
 
+            node: {get: function() {
+                if (!this.length) {
+                    throw new Error('Empty list');
+                } else if (this.length > 1) {
+                    throw new Error('Attempting Single-Node-Operation on multiple nodes');
+                }
+                return this[0];
+            }},
+
             last: {get: function() {
                 if (!this.length) {
                     throw new Error('Empty list');

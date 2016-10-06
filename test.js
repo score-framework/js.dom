@@ -1,4 +1,4 @@
-/* global loadScore:true, expect:true, describe, it, before, after */
+/* global loadScore:true, expect:true, describe, it, before, after, HTMLDivElement */
 
 if (typeof loadScore == 'undefined') {
     var tmp = require('./node.js');
@@ -103,6 +103,39 @@ describe('score.dom', function() {
                     var nodes = score.dom.fromString('<span class="foo"></span><span class="bar"></span>');
                     expect(nodes.length).to.be(2);
                     expect(function() { nodes.eq(-1); }).to.throwError();
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
+    describe('#node', function() {
+
+        it("should return a DOM node", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var div = score.dom.fromString('<div class="foo"></div>');
+                    expect(div.node).to.be.a(HTMLDivElement);
+                    expect(div.node).to.be(div[0]);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should be a single node operation", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var _ = null;
+                    expect(function() { _ = score.dom().node; }).to.throwError();
+                    expect(_).to.be(null);
+                    var div = score.dom.fromString('<div class="foo"></div><div class="bar"></div>');
+                    expect(function() { _ = div.node; }).to.throwError();
+                    expect(_).to.be(null);
                     done();
                 } catch (e) {
                     done(e);
