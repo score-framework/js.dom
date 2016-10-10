@@ -66,10 +66,8 @@
                     } else if (typeof arg == 'object') {
                         result.push(arg);
                     } else {
-                        tmp = dom.queryGlobal(arg);
-                        for (i = tmp.length - 1; i >= 0; i--) {
-                            result.push(tmp[i]);
-                        }
+                        tmp  = dom.queryGlobal(arg);
+                        for (i = tmp.length; i--; result.unshift(tmp[i]));
                     }
                 }
                 return result;
