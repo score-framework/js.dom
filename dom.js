@@ -84,7 +84,7 @@
                 return score.dom(this[0]);
             }},
 
-            node: {get: function() {
+            DOMNode: {get: function() {
                 if (!this.length) {
                     throw new Error('Empty list');
                 } else if (this.length > 1) {
