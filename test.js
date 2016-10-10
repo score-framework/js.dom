@@ -118,8 +118,8 @@ describe('score.dom', function() {
             loadScore(['dom'], function(score) {
                 try {
                     var div = score.dom.fromString('<div class="foo"></div>');
-                    expect(div.node).to.be.a(HTMLDivElement);
-                    expect(div.node).to.be(div[0]);
+                    expect(div.DOMNode).to.be.a(HTMLDivElement);
+                    expect(div.DOMNode).to.be(div[0]);
                     done();
                 } catch (e) {
                     done(e);
@@ -131,10 +131,10 @@ describe('score.dom', function() {
             loadScore(['dom'], function(score) {
                 try {
                     var _ = null;
-                    expect(function() { _ = score.dom().node; }).to.throwError();
+                    expect(function() { _ = score.dom().DOMNode; }).to.throwError();
                     expect(_).to.be(null);
                     var div = score.dom.fromString('<div class="foo"></div><div class="bar"></div>');
-                    expect(function() { _ = div.node; }).to.throwError();
+                    expect(function() { _ = div.DOMNode; }).to.throwError();
                     expect(_).to.be(null);
                     done();
                 } catch (e) {
