@@ -254,6 +254,54 @@ describe('score.dom', function() {
 
     });
 
+    describe('#closest', function() {
+
+        before(function() {
+            var fixture = document.getElementById('fixture');
+            var lvl2 = document.createElement('div');
+            lvl2.id = 'lvl2';
+            fixture.appendChild(lvl2);
+            var lvl3 = document.createElement('div');
+            lvl3.id = 'lvl3';
+            lvl2.appendChild(lvl3);
+        });
+
+        after(function() {
+            var fixture = document.getElementById('fixture');
+            while (fixture.children.length) {
+                fixture.removeChild(fixture.children[0]);
+            }
+        });
+
+        it('should operate on all nodes', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var fixture = score.dom('#fixture');
+                    var lvl3 = score.dom('#lvl3');
+                    var lvl2 = score.dom('#lvl2');
+                    expect(lvl3.closest("div").DOMNode).to.be(lvl2.DOMNode);
+                    expect(lvl2.closest("div").DOMNode).to.be(fixture.DOMNode);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should return empty list if selector does not match', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var lvl3 = score.dom('#lvl3');
+                    expect(lvl3.closest("#NOTINDOM").empty()).to.be(true);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
     describe('#empty', function() {
 
         it('should return true for an empty object', function(done) {
