@@ -198,7 +198,7 @@
                 result = Object.create(dom.proto);
                 for (i = 0; i < this.length; i++) {
                     tmp = this[i].parentNode;
-                    while (tmp) {
+                    while (tmp && tmp !== document) {
                         if (dom.testMatch(tmp, selector)) {
                             result.push(tmp);
                             break;
