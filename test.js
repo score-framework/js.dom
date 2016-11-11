@@ -112,7 +112,7 @@ describe('score.dom', function() {
 
     });
 
-    describe('#node', function() {
+    describe('#DOMNode', function() {
 
         it("should return a DOM node", function(done) {
             loadScore(['dom'], function(score) {
@@ -215,6 +215,43 @@ describe('score.dom', function() {
 
     });
 
+    describe('#empty', function() {
+
+        it('should return true for an empty object', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    expect(score.dom().empty()).to.be(true);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should return false when selecting '#fixture'", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    expect(score.dom('#fixture').empty()).to.be(false);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should return true when selecting children of '#fixture'", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    expect(score.dom('#fixture').children().empty()).to.be(true);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
     describe('#find', function() {
 
         before(function() {
@@ -293,43 +330,6 @@ describe('score.dom', function() {
                 try {
                     var lvl3 = score.dom('#lvl3');
                     expect(lvl3.closest("#NOTINDOM").empty()).to.be(true);
-                    done();
-                } catch (e) {
-                    done(e);
-                }
-            });
-        });
-
-    });
-
-    describe('#empty', function() {
-
-        it('should return true for an empty object', function(done) {
-            loadScore(['dom'], function(score) {
-                try {
-                    expect(score.dom().empty()).to.be(true);
-                    done();
-                } catch (e) {
-                    done(e);
-                }
-            });
-        });
-
-        it("should return false when selecting '#fixture'", function(done) {
-            loadScore(['dom'], function(score) {
-                try {
-                    expect(score.dom('#fixture').empty()).to.be(false);
-                    done();
-                } catch (e) {
-                    done(e);
-                }
-            });
-        });
-
-        it("should return true when selecting children of '#fixture'", function(done) {
-            loadScore(['dom'], function(score) {
-                try {
-                    expect(score.dom('#fixture').children().empty()).to.be(true);
                     done();
                 } catch (e) {
                     done(e);
