@@ -422,7 +422,7 @@
             return node[matches](selector);
         };
 
-        dom.__version__ = '0.0.13';
+        dom.__version__ = '0.0.14';
 
         return dom;
 
