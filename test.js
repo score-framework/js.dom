@@ -325,7 +325,7 @@ describe('score.dom', function() {
             });
         });
 
-        it('should return empty list if selector does not match', function(done) {
+        it('should return empty score.dom object if selector does not match', function(done) {
             loadScore(['dom'], function(score) {
                 try {
                     var lvl3 = score.dom('#lvl3');
