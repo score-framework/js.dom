@@ -252,6 +252,87 @@ describe('score.dom', function() {
 
     });
 
+    describe('#one & #findOne', function() {
+
+        before(function() {
+            var fixture = document.getElementById('fixture');
+            for (var i = 0; i < 5; i++) {
+                var div = document.createElement('div');
+                div.className = 'div' + i;
+                fixture.appendChild(div);
+            }
+        });
+
+        after(function() {
+            var fixture = document.getElementById('fixture');
+            while (fixture.children.length) {
+                fixture.removeChild(fixture.children[0]);
+            }
+        });
+
+        it('should return a score.dom object', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var fixture = score.dom('#fixture');
+                    var div1 = score.dom('#fixture').find('.div1');
+                    expect(div1.one).to.be.a('function');
+                    expect(div1.one()).to.be.an('object');
+                    expect(div1.one()).to.be(div1);
+                    expect(fixture.findOne).to.be.a('function');
+                    expect(fixture.findOne('.div1')).to.be.an('object');
+                    expect(fixture.findOne('.div1').DOMNode).to.be(div1.DOMNode);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('findOne should accept selector', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var fixture = score.dom('#fixture');
+                    var div1 = score.dom('#fixture').find('.div1');
+                    expect(fixture.findOne('.div1').DOMNode).to.be(div1.DOMNode);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should only return an object with a length of 1', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var div1 = score.dom('#fixture').find('.div1');
+                    expect(div1.one().length).to.be(1);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should throw errors on multiple or no results', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var fixture = score.dom('#fixture');
+                    var nodes = fixture.find('div');
+                    var empty = fixture.find('.foobar');
+                    expect(function() { nodes.one(); }).to.throwError();
+                    expect(empty.empty()).to.be(true);
+                    expect(function() { empty.one(); }).to.throwError();
+                    expect(function() { fixture.findOne('div'); }).to.throwError();
+                    expect(function() { fixture.findOne('.foobar'); }).to.throwError();
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
     describe('#find', function() {
 
         before(function() {

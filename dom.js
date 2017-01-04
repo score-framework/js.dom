@@ -148,6 +148,15 @@
                 return !this.length;
             }},
 
+            one: {value: function() {
+                if (!this.length) {
+                    throw new Error('No result found');
+                } else if (this.length > 1) {
+                    throw new Error('Multiple results found');
+                }
+                return this;
+            }},
+
             // iterators
 
             forEach: {value: function(callback, thisArg) {
@@ -192,6 +201,10 @@
                     }
                 }
                 return result;
+            }},
+
+            findOne: {value: function(selector) {
+                return this.find(selector).one();
             }},
 
             closest: {value: function(selector) {
