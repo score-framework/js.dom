@@ -165,6 +165,52 @@
                 return this;
             }},
 
+            map: {value: function(callback, thisArg) {
+                var result = [];
+                for (var i = 0; i < this.length; i++) {
+                    result.push(callback.call(thisArg, score.dom(this[i]), i, this));
+                }
+                return result;
+            }},
+
+            filter: {value: function(callback, thisArg) {
+                var result = Object.create(dom.proto),
+                    i;
+                if (typeof callback === "string") {
+                    var selector = callback;
+                    for (i = 0; i < this.length; i++) {
+                        if (dom.testMatch(this[i], selector)) {
+                            result.push(this[i]);
+                        }
+                    }
+                } else {
+                    for (i = 0; i < this.length; i++) {
+                        if (callback.call(thisArg, score.dom(this[i]), i, this)) {
+                            result.push(this[i]);
+                        }
+                    }
+                }
+                return result;
+            }},
+
+            reduce: {value: function(callback /*, intialValue*/) {
+                var result;
+                var i = 0;
+                if (arguments.length == 2) {
+                    result = arguments[1];
+                } else {
+                    if (this.length < 1) {
+                        throw new Error('Reduce of empty list with no initial value');
+                    }
+                    result = score.dom(this[0]);
+                    i = 1;
+                }
+                for (; i < this.length; i++) {
+                    result = callback(result, score.dom(this[i]), i, this);
+                }
+                return result;
+            }},
+
             // DOM traversal
 
             children: {value: function(selector) {

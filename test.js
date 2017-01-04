@@ -633,7 +633,7 @@ describe('score.dom', function() {
 
     describe('#forEach', function() {
 
-        it("should return score.dom objects", function(done) {
+        it("should return score.dom objects in callback", function(done) {
             loadScore(['dom'], function(score) {
                 try {
                     var div = score.dom.fromString('<div class="foo-0"></div><div class="foo-1"></div>');
@@ -660,6 +660,201 @@ describe('score.dom', function() {
                             expect(childNode.attr('class')).to.be('foo-' + index + '-' + childIndex);
                         });
                     });
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
+    describe('#filter', function() {
+
+        before(function() {
+            var fixture = document.getElementById('fixture');
+            for (var i = 0; i < 5; i++) {
+                var div = document.createElement('div');
+                div.className = 'div' + i;
+                fixture.appendChild(div);
+            }
+        });
+
+        after(function() {
+            var fixture = document.getElementById('fixture');
+            while (fixture.children.length) {
+                fixture.removeChild(fixture.children[0]);
+            }
+        });
+
+
+        it("should return score.dom objects in callback", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var div = score.dom.fromString('<div class="foo-0"></div><div class="foo-1"></div>');
+                    expect(div.length).to.be(2);
+                    div.filter(function(node, index) {
+                        expect(node).to.be(score.dom(node));
+                        expect(node.attr('class')).to.be('foo-' + index);
+                    });
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should filter as native function", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var fixture = score.dom('#fixture');
+                    var nodes = fixture.find('div');
+                    var filteredNodes = score.dom(Array.apply(null, nodes).filter(function(DOMNode) {
+                        return DOMNode.className === 'div1' || 
+                            DOMNode.className === 'div2';
+                    }));
+                    expect(nodes.filter(function(node) {
+                        return node.DOMNode.className === 'div1' || 
+                            node.DOMNode.className === 'div2';
+                    })).to.be.eql(filteredNodes);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should accept selector instead of function", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var fixture = score.dom('#fixture');
+                    var nodes = fixture.find('div');
+                    var div1 = fixture.find('.div1');
+                    expect(nodes.filter('.div1').DOMNode).to.be(div1.DOMNode);
+                    expect(nodes.filter('.div1, .div2').length).to.be(2);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should apply selector properly", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var fixture = score.dom('#fixture');
+                    var nodes = fixture.find('div');
+                    expect(nodes.filter('.div1, .div2').matches('.div1, .div2')).to.be(true);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
+    describe('#map', function() {
+
+        before(function() {
+            var fixture = document.getElementById('fixture');
+            for (var i = 0; i < 5; i++) {
+                var div = document.createElement('div');
+                div.className = 'div' + i;
+                fixture.appendChild(div);
+            }
+        });
+
+        after(function() {
+            var fixture = document.getElementById('fixture');
+            while (fixture.children.length) {
+                fixture.removeChild(fixture.children[0]);
+            }
+        });
+
+
+        it("should return score.dom objects in callback", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var div = score.dom.fromString('<div class="foo-0"></div><div class="foo-1"></div>');
+                    expect(div.length).to.be(2);
+                    div.map(function(node, index) {
+                        expect(node).to.be(score.dom(node));
+                        expect(node.attr('class')).to.be('foo-' + index);
+                    });
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should map as native function", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var fixture = score.dom('#fixture');
+                    var nodes = fixture.find('div');
+                    var list = Array.apply(null, nodes).map(function(DOMNode) {
+                        return DOMNode.className;
+                    });
+                    expect(nodes.map(function(node) {
+                        return node.DOMNode.className;
+                    })).to.be.eql(list);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
+    describe('#reduce', function() {
+
+        before(function() {
+            var fixture = document.getElementById('fixture');
+            for (var i = 0; i < 5; i++) {
+                var div = document.createElement('div');
+                div.className = 'div' + i;
+                fixture.appendChild(div);
+            }
+        });
+
+        after(function() {
+            var fixture = document.getElementById('fixture');
+            while (fixture.children.length) {
+                fixture.removeChild(fixture.children[0]);
+            }
+        });
+
+        it("should return score.dom objects in callback", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var div = score.dom.fromString('<div class="foo-0"></div><div class="foo-1"></div>');
+                    expect(div.length).to.be(2);
+                    div.reduce(function(nodeA, nodeB) {
+                        expect(nodeA).to.be(score.dom(nodeA));
+                        expect(nodeB).to.be(score.dom(nodeB));
+                        return nodeA;
+                    }, score.dom());
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it("should reduce as native function", function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var fixture = score.dom('#fixture');
+                    var nodes = fixture.find('div');
+                    var str = Array.apply(null, nodes).reduce(function(s, DOMNode) {
+                        return s + DOMNode.className;
+                    }, "");
+                    expect(nodes.reduce(function(s, node) {
+                        return s + node.DOMNode.className;
+                    }, "")).to.be(str);
                     done();
                 } catch (e) {
                     done(e);
@@ -779,6 +974,7 @@ describe('score.dom', function() {
         });
 
     });
+
 
     describe('#attr', function() {
 

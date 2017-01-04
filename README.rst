@@ -97,8 +97,9 @@ allowing you to use all array features:
     nodes.length; // 3
     nodes[0]; // A native HTMLDivElement: <div class="spam">...</div>
 
-There is just one exception: we are overriding the ``forEach()`` function to
-provide score.dom objects:
+There are a few exceptions: we are overriding the ``forEach()``, ``filter()``,
+``map()`` and ``reduce()`` functions to provide score.dom objects in the 
+callback:
 
 .. code-block:: javascript
 
@@ -106,6 +107,13 @@ provide score.dom objects:
         // node is a score.dom object
         console.log(node.attr('class'));
     });
+
+For convenience ``filter()`` also accepts a selector instead of a callback
+function:
+
+.. code-block:: javascript
+
+    nodes.filter(':not(.spam)');
 
 Since score.dom objects are actually arrays, all operations are always
 performed on *all* nodes in your array. This might come as a surprise in
