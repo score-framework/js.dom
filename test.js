@@ -48,13 +48,39 @@ describe('score.dom', function() {
             });
         });
 
-        it('should accept nodes', function(done) {
+        it('should accept DOMNodes', function(done) {
             loadScore(['dom'], function(score) {
                 try {
                     var fixtureDOMNode = document.getElementById('fixture');
                     var fixture = score.dom(fixtureDOMNode);
                     expect(fixture.length).to.be(1);
                     expect(fixture[0]).to.be(fixtureDOMNode);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should accept Array', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var arr = Array.apply(null, document.querySelectorAll('#fixture')).slice();
+                    expect(score.dom(arr).length).to.be(1);
+                    expect(score.dom(arr)[0]).to.be(document.querySelectorAll('#fixture')[0]);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should accept NodeList', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var nodelist = document.querySelectorAll('#fixture');
+                    expect(score.dom(nodelist).length).to.be(1);
+                    expect(score.dom(nodelist)[0]).to.be(document.querySelectorAll('#fixture')[0]);
                     done();
                 } catch (e) {
                     done(e);

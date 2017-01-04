@@ -57,9 +57,8 @@
                 if (arg) {
                     if (typeof arg == 'object' && Object.getPrototypeOf(arg) == dom.proto) {
                         result = arg;
-                    } else if (Array.isArray(arg)) {
-                        result.concat(arg);
-                    } else if (/\[object (HTMLCollection|NodeList)\]/.test(Object.prototype.toString.call(arg))) {
+                    } else if (Array.isArray(arg) ||
+                        /\[object (HTMLCollection|NodeList)\]/.test(Object.prototype.toString.call(arg))) {
                         for (i = 0; i < arg.length; i++) {
                             result.push(arg[i]);
                         }
