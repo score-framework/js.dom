@@ -185,34 +185,6 @@ operations will fail if the score.dom object contains more than one element:
     }
 
 
-.. _js_dom_snq:
-
-Single Node Query
-`````````````````
-
-Sometimes it can be handy to check if your query will return exactly one result.
-Therefor ``findOne()`` and ``one()`` will raise errors on empty or multiple results:
-
-.. code-block:: javascript
-
-    try {
-        score.dom('#fish-tank').findOne('.fish');
-    } catch (e) {
-        console.log(e);  // "Multiple results found"
-    }
-
-    try {
-        score.dom('#elusive-fish').one();
-    } catch (e) {
-        console.log(e);  // "No result found"
-    }
-
-    // Since `one()` doesn't actually do anything to the result it will just 
-    // pass the object:
-    var oneMoreMint = score.dom('#mint');
-    oneMoreMint === oneMoreMint.one(); // true
-
-
 Filtering
 ---------
 
@@ -300,6 +272,7 @@ There are two operations you can perform on individual nodes:
 
 .. _textContent: https://developer.mozilla.org/en/docs/Web/API/Node/textContent 
 
+
 Restructuring
 -------------
 
@@ -371,6 +344,34 @@ This is done for each node in the original list.
     tops[0] === tops[3];
     var secondLevels = score.dom('#top').find('.lvl2');
     secondLevels.length === 2;
+
+.. _js_dom_snq:
+
+
+Single Node Queries
+-------------------
+
+Sometimes it can be handy to check if your query will return exactly one result.
+Therefor ``findOne()`` and ``one()`` will raise errors on empty or multiple results:
+
+.. code-block:: javascript
+
+    try {
+        score.dom('#fish-tank').findOne('.fish');
+    } catch (e) {
+        console.log(e);  // "Multiple results found"
+    }
+
+    try {
+        score.dom('#elusive-fish').one();
+    } catch (e) {
+        console.log(e);  // "No result found"
+    }
+
+    // Since `one()` doesn't actually do anything to the result it will just 
+    // pass the object:
+    var oneMoreMint = score.dom('#mint');
+    oneMoreMint === oneMoreMint.one(); // true
 
 
 CSS Class Manipulation
