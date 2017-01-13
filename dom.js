@@ -147,11 +147,11 @@
                 return !this.length;
             }},
 
-            one: {value: function() {
+            assertOne: {value: function() {
                 if (!this.length) {
-                    throw new Error('No result found');
+                    throw new Error('AssertionError: Empty list');
                 } else if (this.length > 1) {
-                    throw new Error('Multiple results found');
+                    throw new Error('AssertionError: Multiple nodes found');
                 }
                 return this;
             }},
@@ -246,10 +246,6 @@
                     }
                 }
                 return result;
-            }},
-
-            findOne: {value: function(selector) {
-                return this.find(selector).one();
             }},
 
             closest: {value: function(selector) {

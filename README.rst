@@ -12,8 +12,6 @@ libraries for the development of large scale web projects. Powered by strg.at_.
 score.dom
 *********
 
-.. _js_dom:
-
 .. image:: https://travis-ci.org/score-framework/js.dom.svg?branch=master
     :target: https://travis-ci.org/score-framework/js.dom
 
@@ -44,7 +42,7 @@ The "constructor" [1]_ will return an object deriving from ``score.dom.proto``.
 It accepts either of the following:
 
 - *Nothing*: Creates an empty node list.
-  
+
 .. code-block:: javascript
 
       score.dom()
@@ -150,12 +148,11 @@ available. Note, that the precautions are tied to *operations*, not whole
 *functions*: Some usage of the function might have a different set of
 constraints than another.
 
-.. _js_dom_min1:
 
 Minimum Length 1
 ````````````````
 
-Some operations intend to change a node. These operations are marked (_`min1`)
+Some operations intend to change a node. These operations are marked (`min1 <#minimum-length-1>`__)
 and will fail if the score.dom object is empty:
 
 .. code-block:: javascript
@@ -171,12 +168,10 @@ and will fail if the score.dom object is empty:
     fruits.append(banana);  // Error: "Empty list"
 
 
-.. _js_dom_sno:
-
 Single Node Operations
 ``````````````````````
 
-Some operations are marked as Single Node Operations (_`sno` for short). These
+Some operations are marked as Single Node Operations (`sno <#single-node-operations>`__ for short). These
 operations will fail if the score.dom object contains more than one element:
 
 .. code-block:: javascript
@@ -191,6 +186,32 @@ operations will fail if the score.dom object contains more than one element:
     } catch (e) {
         console.log(e);  // "Attempting Single-Node-Operation on multiple nodes"
     }
+
+    
+Assertion
+`````````
+
+Sometimes it can be handy to check if your query will return exactly one result.
+Therefor ``assertOne()`` will throw errors on empty or multiple results in a query:
+
+.. code-block:: javascript
+
+    try {
+        score.dom('#fish-tank').find('.fish').assertOne();
+    } catch (e) {
+        console.log(e);  // "Multiple results found"
+    }
+
+    try {
+        score.dom('#elusive-fish').assertOne();
+    } catch (e) {
+        console.log(e);  // "No result found"
+    }
+
+    // Since `assertOne()` doesn't actually do anything,
+    // it will simply pass the object:
+    var oneMoreMint = score.dom('#mint');
+    oneMoreMint === oneMoreMint.assertOne(); // true
 
 
 Filtering
@@ -240,7 +261,7 @@ Querying
 --------
 
 You can query, if *all* nodes in your list match a given selector using
-``matches()`` (min1_):
+``matches()`` (`min1 <#minimum-length-1>`__):
 
 .. code-block:: javascript
 
@@ -253,7 +274,7 @@ Node Operations
 
 There are two operations you can perform on individual nodes:
 
-* ``text()`` will return the textContent_ of the node (sno_)
+* ``text()`` will return the textContent_ of the node (`sno <#single-node-operations>`__)
   or set the textContent of all nodes to a given value:
 
   .. code-block:: javascript
@@ -352,34 +373,6 @@ This is done for each node in the original list.
     tops[0] === tops[3];
     var secondLevels = score.dom('#top').find('.lvl2');
     secondLevels.length === 2;
-
-.. _js_dom_snq:
-
-
-Single Node Queries
--------------------
-
-Sometimes it can be handy to check if your query will return exactly one result.
-Therefor ``findOne()`` and ``one()`` will raise errors on empty or multiple results:
-
-.. code-block:: javascript
-
-    try {
-        score.dom('#fish-tank').findOne('.fish');
-    } catch (e) {
-        console.log(e);  // "Multiple results found"
-    }
-
-    try {
-        score.dom('#elusive-fish').one();
-    } catch (e) {
-        console.log(e);  // "No result found"
-    }
-
-    // Since `one()` doesn't actually do anything to the result it will just 
-    // pass the object:
-    var oneMoreMint = score.dom('#mint');
-    oneMoreMint === oneMoreMint.one(); // true
 
 
 CSS Class Manipulation

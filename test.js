@@ -278,7 +278,7 @@ describe('score.dom', function() {
 
     });
 
-    describe('#one & #findOne', function() {
+    describe('#assertOne', function() {
 
         before(function() {
             var fixture = document.getElementById('fixture');
@@ -301,25 +301,9 @@ describe('score.dom', function() {
                 try {
                     var fixture = score.dom('#fixture');
                     var div1 = score.dom('#fixture').find('.div1');
-                    expect(div1.one).to.be.a('function');
-                    expect(div1.one()).to.be.an('object');
-                    expect(div1.one()).to.be(div1);
-                    expect(fixture.findOne).to.be.a('function');
-                    expect(fixture.findOne('.div1')).to.be.an('object');
-                    expect(fixture.findOne('.div1').DOMNode).to.be(div1.DOMNode);
-                    done();
-                } catch (e) {
-                    done(e);
-                }
-            });
-        });
-
-        it('findOne should accept selector', function(done) {
-            loadScore(['dom'], function(score) {
-                try {
-                    var fixture = score.dom('#fixture');
-                    var div1 = score.dom('#fixture').find('.div1');
-                    expect(fixture.findOne('.div1').DOMNode).to.be(div1.DOMNode);
+                    expect(div1.assertOne).to.be.a('function');
+                    expect(div1.assertOne()).to.be.an('object');
+                    expect(div1.assertOne()).to.be(div1);
                     done();
                 } catch (e) {
                     done(e);
@@ -331,7 +315,7 @@ describe('score.dom', function() {
             loadScore(['dom'], function(score) {
                 try {
                     var div1 = score.dom('#fixture').find('.div1');
-                    expect(div1.one().length).to.be(1);
+                    expect(div1.assertOne().length).to.be(1);
                     done();
                 } catch (e) {
                     done(e);
@@ -345,9 +329,9 @@ describe('score.dom', function() {
                     var fixture = score.dom('#fixture');
                     var nodes = fixture.find('div');
                     var empty = fixture.find('.foobar');
-                    expect(function() { nodes.one(); }).to.throwError();
+                    expect(function() { nodes.assertOne(); }).to.throwError();
                     expect(empty.empty()).to.be(true);
-                    expect(function() { empty.one(); }).to.throwError();
+                    expect(function() { empty.assertOne(); }).to.throwError();
                     expect(function() { fixture.findOne('div'); }).to.throwError();
                     expect(function() { fixture.findOne('.foobar'); }).to.throwError();
                     done();
