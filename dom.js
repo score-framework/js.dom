@@ -353,10 +353,10 @@
                 }
                 wrapped = score.dom(value);
                 if (!pivot) {
-                    if (!this[0].children.length) {
+                    if (!this[0].childNodes.length) {
                         return this.append(value);
                     }
-                    tmp = this[0].children[0];
+                    tmp = this[0].childNodes[0];
                     for (i = 0; i < wrapped.length; i++) {
                         this[0].insertBefore(wrapped[i], tmp);
                     }
