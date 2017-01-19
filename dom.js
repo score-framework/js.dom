@@ -106,7 +106,7 @@
                 return score.dom(this[index]);
             }},
 
-            uniq: {value: function(index) {
+            uniq: {value: function() {
                 result = Object.create(dom.proto);
                 for (i = 0; i < this.length; i++) {
                     if (result.indexOf(this[i]) < 0) {
