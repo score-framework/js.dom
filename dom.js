@@ -1,5 +1,5 @@
 /**
- * Copyright © 2015,2016 STRG.AT GmbH, Vienna, Austria
+ * Copyright © 2015-2017 STRG.AT GmbH, Vienna, Austria
  *
  * This file is part of the The SCORE Framework.
  *
@@ -106,7 +106,7 @@
                 return score.dom(this[index]);
             }},
 
-            uniq: {value: function(index) {
+            uniq: {value: function() {
                 result = Object.create(dom.proto);
                 for (i = 0; i < this.length; i++) {
                     if (result.indexOf(this[i]) < 0) {
@@ -368,10 +368,10 @@
                 }
                 wrapped = score.dom(value);
                 if (!pivot) {
-                    if (!this[0].children.length) {
+                    if (!this[0].childNodes.length) {
                         return this.append(value);
                     }
-                    tmp = this[0].children[0];
+                    tmp = this[0].childNodes[0];
                     for (i = 0; i < wrapped.length; i++) {
                         this[0].insertBefore(wrapped[i], tmp);
                     }
@@ -491,7 +491,7 @@
             return node[matches](selector);
         };
 
-        dom.__version__ = '0.0.14';
+        dom.__version__ = '0.0.15';
 
         return dom;
 

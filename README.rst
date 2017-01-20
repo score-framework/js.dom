@@ -406,7 +406,7 @@ standards without them!
 License
 =======
 
-Copyright © 2015,2016 STRG.AT GmbH, Vienna, Austria
+Copyright © 2015-2017 STRG.AT GmbH, Vienna, Austria
 
 All files in and beneath this directory are part of The SCORE Framework.
 The SCORE Framework and all its parts are free software: you can redistribute

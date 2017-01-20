@@ -1,6 +1,6 @@
 {
   "name": "score.dom",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "DOM Manipulation for The SCORE Framework",
   "main": "dom.js",
   "directories": {
