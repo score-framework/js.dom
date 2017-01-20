@@ -156,6 +156,21 @@
                 return this;
             }},
 
+            // array functions
+
+            toArray: {value: function() {
+                return Array.prototype.slice.call(this);
+            }},
+
+            concat: {value: function() {
+                var arr = this.toArray();
+                var args = Array.prototype.slice.call(arguments);
+                args = args.reduce(function(result, arg) {
+                    return result.concat(dom(arg).toArray());
+                }, []);
+                return score.dom(arr.concat(args));
+            }},
+
             // iterators
 
             forEach: {value: function(callback, thisArg) {

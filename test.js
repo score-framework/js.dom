@@ -90,6 +90,161 @@ describe('score.dom', function() {
 
     });
 
+    describe('#toArray', function() {
+
+        before(function() {
+            var fixture = document.getElementById('fixture');
+            for (var i = 0; i < 5; i++) {
+                var div = document.createElement('div');
+                div.className = 'lvl2';
+                fixture.appendChild(div);
+                for (var j = 0; j < 5; j++) {
+                    var span = document.createElement('span');
+                    span.className = 'lvl3';
+                    div.appendChild(span);
+                }
+            }
+        });
+
+        after(function() {
+            var fixture = document.getElementById('fixture');
+            while (fixture.children.length) {
+                fixture.removeChild(fixture.children[0]);
+            }
+        });
+
+        it('should not return a score.dom object', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var nodes = score.dom('#fixture *');
+                    expect(Object.getPrototypeOf(nodes.toArray())).not.to.be(score.dom.proto);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should return an Array', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var nodes = score.dom('#fixture *');
+                    expect(Object.getPrototypeOf(nodes.toArray())).to.be(Array.prototype);
+                    expect(Array.isArray(nodes.toArray())).to.be(true);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should not mutate content', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var nodes = score.dom('#fixture *');
+                    var arr = nodes.toArray();
+                    expect(nodes.length).to.be(arr.length);
+                    arr.forEach(function(v, i) {
+                        expect(v).to.be(nodes[i]);
+                    });
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
+    describe('#concat', function() {
+
+        before(function() {
+            var fixture = document.getElementById('fixture');
+            for (var i = 0; i < 5; i++) {
+                var div = document.createElement('div');
+                div.className = 'lvl2';
+                fixture.appendChild(div);
+                for (var j = 0; j < 5; j++) {
+                    var span = document.createElement('span');
+                    span.className = 'lvl3';
+                    div.appendChild(span);
+                }
+            }
+        });
+
+        after(function() {
+            var fixture = document.getElementById('fixture');
+            while (fixture.children.length) {
+                fixture.removeChild(fixture.children[0]);
+            }
+        });
+
+        it('should return score.dom Objects', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var a = score.dom('.lvl2');
+                    var b = score.dom('.lvl3');
+                    var result = a.concat(b);
+                    expect(Object.getPrototypeOf(result)).to.be(score.dom.proto);
+                    expect(a.length + b.length).to.be(result.length);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should concat contents of two score.dom Objects', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var a = score.dom('.lvl2');
+                    var b = score.dom('.lvl3');
+                    var result = a.concat(b);
+                    expect(a.length + b.length).to.be(result.length);
+                    for (var i = 0; i < result.length; i++) {
+                        if (i < a.length) {
+                            expect(result[i]).to.be(a[i]);
+                        } else {
+                            expect(result[i]).to.be(b[i - a.length]);
+                        }
+                    }
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should concat score.dom Objects, Arrays, NodeLists, selectors', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    [
+                        score.dom('.lvl3'),
+                        score.dom('.lvl3').toArray(),
+                        document.getElementsByClassName('lvl3'),
+                        '.lvl3'
+                    ].forEach(function(b) {
+                        var a = score.dom('.lvl2');
+                        var refB = score.dom('.lvl3');
+                        var result = a.concat(b);
+                        expect(a.length + refB.length).to.be(result.length);
+                        for (var i = 0; i < result.length; i++) {
+                            if (i < a.length) {
+                                expect(result[i]).to.be(a[i]);
+                            } else {
+                                expect(result[i]).to.be(refB[i - a.length]);
+                            }
+                        }
+                    });
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+    });
+
     describe('#eq', function() {
 
         it('should return a score.dom object', function(done) {
