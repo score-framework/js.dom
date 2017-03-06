@@ -489,7 +489,7 @@
         return node[matches](selector);
     };
 
-    dom.__version__ = '0.0.16';
+    dom.__version__ = '0.1.0';
 
     return dom;
 
