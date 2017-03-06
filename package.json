@@ -25,9 +25,6 @@
     "url": "https://github.com/score-framework/js.dom/issues"
   },
   "homepage": "https://github.com/score-framework/js.dom#readme",
-  "dependencies": {
-      "score.init": "0.0.x"
-  },
   "devDependencies": {
       "mocha": "2.x.x",
       "expect.js": "0.3.x",
