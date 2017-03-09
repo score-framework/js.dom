@@ -321,7 +321,11 @@
 
         detach: {value: function() {
             for (i = 0; i < this.length; i++) {
-                this[i].parentNode.removeChild(this[i]);
+                tmp = this[i].parentNode;
+                if (!tmp) {
+                    throw new Error('Element has no parent');
+                }
+                tmp.removeChild(this[i]);
             }
             return this;
         }},
