@@ -533,7 +533,6 @@ describe('score.dom', function() {
         it('should return a score.dom object', function(done) {
             loadScore(['dom'], function(score) {
                 try {
-                    var fixture = score.dom('#fixture');
                     var div1 = score.dom('#fixture').find('.div1');
                     expect(div1.assertOne).to.be.a('function');
                     expect(div1.assertOne()).to.be.an('object');
