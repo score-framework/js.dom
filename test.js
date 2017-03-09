@@ -396,6 +396,85 @@ describe('score.dom', function() {
 
     });
 
+    describe('#parent', function() {
+
+        it('should provide a node\'s parent', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var node = score.dom.create('div');
+                    score.dom('#fixture').append(node);
+                    var parents = node.parent();
+                    expect(Object.getPrototypeOf(parents)).to.be(score.dom.proto);
+                    expect(parents.length).to.be(1);
+                    expect(parents[0]).to.be(document.getElementById('fixture'));
+                    node.detach();
+                    done();
+                } catch (e) {
+                    node.detach();
+                    done(e);
+                }
+            });
+        });
+
+        it('should provide all nodes\' parents', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var nodes = score.dom('#fixture')
+                        .append(score.dom.create('div'))
+                        .append(score.dom.create('div'))
+                        .children();
+                    var parents = nodes.parent();
+                    expect(Object.getPrototypeOf(parents)).to.be(score.dom.proto);
+                    expect(parents.length).to.be(2);
+                    expect(parents[0]).to.be(parents[1]);
+                    nodes.detach();
+                    done();
+                } catch (e) {
+                    nodes.detach();
+                    done(e);
+                }
+            });
+        });
+
+        it('should throw an error on detached nodes', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var node = score.dom.create('div');
+                    expect(function() { node.parent(); }).to.throwError();
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should throw an error even if one node is detached', function(done) {
+            loadScore(['dom'], function(score) {
+                try {
+                    var node1 = score.dom.create('div');
+                    var node2 = score.dom.create('div');
+                    var nodes = score.dom([node1.DOMNode, node2.DOMNode]);
+                    score.dom('#fixture').append(node1);
+                    expect(function() { nodes.parent(); }).to.throwError();
+                    score.dom('#fixture').append(node2);
+                    nodes.parent();  // should not throw
+                    node1.detach();
+                    node2.detach();
+                    done();
+                } catch (e) {
+                    if (node1.DOMNode.parentNode) {
+                        node1.detach();
+                    }
+                    if (node2.DOMNode.parentNode) {
+                        node2.detach();
+                    }
+                    done(e);
+                }
+            });
+        });
+
+    });
+
     describe('#empty', function() {
 
         it('should return true for an empty object', function(done) {
