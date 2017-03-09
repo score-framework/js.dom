@@ -243,6 +243,9 @@
             result = Object.create(dom.proto);
             for (i = 0; i < this.length; i++) {
                 tmp = this[i].parentNode;
+                if (!tmp) {
+                    throw new Error('Element has no parent');
+                }
                 if (!selector || dom.testMatch(tmp, selector)) {
                     result.push(tmp);
                 }
