@@ -496,7 +496,7 @@
         return node[matches](selector);
     };
 
-    dom.__version__ = '0.1.0';
+    dom.__version__ = '0.1.1';
 
     return dom;
 
